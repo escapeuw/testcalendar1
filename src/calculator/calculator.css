@@ -1,0 +1,67 @@
+.calculator {
+    width: 420px;
+    height: 600px;
+    position: relative;
+    border: 5px solid black;
+    border-radius: 10px;
+    background-color: black;
+  }
+  
+  .displayFormula {
+    background-color: black;
+    color: orange;
+    text-align: right;
+    height: 70px;
+    font-size: 25px;
+    overflow-wrap: break-word;
+    word-wrap: break-word;
+  }
+  .displayOutput {
+    background-color: black;
+    color: white;
+    text-align: right;
+    height: 60px;
+    font-size: 40px;
+    overflow-wrap: break-word;
+    word-wrap: break-word;
+  }
+  
+  button {
+    position: relative;
+    width: 105px;
+    height: 90px;
+    font-size: 20px;
+    background-color: #3b3b3b;
+    color: white;
+    outline: 1px solid black;
+    border: none;
+    border-radius: 3px;
+  }
+  button:hover {
+    border-radius: 5px;
+    border: 2px white solid;
+    color: black;
+  }
+  .greyButton:hover {
+    color: beige;
+  }
+  
+  .orangeButton {
+    background-color: orange;
+    z-index: 3;
+  }
+  
+  .greyButton {
+    background-color: #CDCBCB;
+    color: black;
+  }
+  
+  .big {
+    width: 210px;
+  }
+  
+  .equal {
+    height: 180px;
+    position: absolute;
+  }
+  
