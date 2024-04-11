@@ -6,59 +6,40 @@ import Calculator from './calculator/calculator.jsx'
 import React from 'react'
 
 
-
 const date = new Date();
 const hours = date.getHours();
 const minutes = date.getMinutes();
 
 
-class Phone extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      current: 'home',
-      homeButton: false,
-      isExpanded: false
-    }
-    this.handleCalculator = this.handleCalculator.bind(this);
-    this.handlePhoneCall = this.handlePhoneCall.bind(this);
-    this.handleNotes = this.handleNotes.bind(this);
-    this.handleHome = this.handleHome.bind(this);
+function Phone() {
+  const [current, setCurrent] = useState('home');
+  const [homeButton, setHomeButton] = useState(false);
+
+  const handleCalculator = () => {
+    setCurrent('calculator');
+    setHomeButton(true);
   }
-  handleCalculator() {
-    this.setState(state => ({
-      current: 'calculator',
-      homeButton: true,
-      isExpanded: true
-    }))
+
+  const handlePhoneCall = () => {
+    setCurrent('phonecall');
+    setHomeButton(true);
   }
-  handlePhoneCall() {
-    this.setState(state => ({
-      current: 'phonecall',
-      homeButton: true
-    }))
+
+  const handleNotes = () => {
+    setCurrent('notes');
+    setHomeButton(true);
   }
-  handleNotes() {
-    this.setState(state => ({
-      current: 'notes',
-      homeButton: true
-    }))
+
+  const handleHome = () => {
+      setCurrent('home');
+      setHomeButton(false);
   }
-  handleHome() {
-    this.setState(state => ({
-      current: 'home',
-      homeButton: false
-    }))
-  }
-  render() {
-    const homeButton = this.state.homeButton;
-    const current = this.state.current;
     return(
       <div>
         <div className="iPhone">
           {/* change screen background depending on apps*/}
           <div className="screen" style={(current === 'calculator' || current === 'phonecall') ? {background: "black"} : current === 'notes' ? {background: "beige"} : {}}>
-              <div className="topBar" style={current === "notes" ? {color: "black"} : {}} onClick={homeButton ? this.handleHome : undefined}>
+              <div className="topBar" style={current === "notes" ? {color: "black"} : {}} onClick={homeButton ? handleHome : undefined}>
               <span className="clock">{hours}:{minutes}</span>
               <span className="icons">
                 <i className="fa-solid fa-signal"></i>
@@ -67,24 +48,20 @@ class Phone extends React.Component {
                 </span> 
               </div>
             <div id="contentContainer">
-              {this.state.current === 'home' && <Apps calculator={this.handleCalculator} phonecall={this.handlePhoneCall} notes={this.handleNotes} />}
-              {this.state.current === 'calculator' && <Calculator />}
-              {this.state.current === 'phonecall' && <PhoneCall />}
-              {this.state.current === 'notes' && <Notes />} 
+              {current === 'home' && <Apps calculator={handleCalculator} phonecall={handlePhoneCall} notes={handleNotes} />}
+              {current === 'calculator' && <Calculator />}
+              {current === 'phonecall' && <PhoneCall />}
+              {current === 'notes' && <Notes />} 
            </div>
           </div>
          </div>
       </div>
     )
-  }
 }
 
 
-class Apps extends React.Component {
-  constructor(props) {
-    super(props);
-  }
-  render() {
+function Apps(props) {
+
     return(
       <div>
         <div className="appContainer">
@@ -104,11 +81,11 @@ class Apps extends React.Component {
                 Safari
               </div>
               <div className="imgText">
-            <img onClick={this.props.calculator} src="https://aroundsketch.github.io/Apple-App-Icons/App%20Icon/Apple/Calculator/%40PNG.png" />
+            <img onClick={props.calculator} src="https://aroundsketch.github.io/Apple-App-Icons/App%20Icon/Apple/Calculator/%40PNG.png" />
                 Calculator
               </div>
               <div className="imgText">
-            <img onClick={this.props.notes} src="https://aroundsketch.github.io/Apple-App-Icons/App%20Icon/Apple/Notes/%40PNG.png" />
+            <img onClick={props.notes} src="https://aroundsketch.github.io/Apple-App-Icons/App%20Icon/Apple/Notes/%40PNG.png" />
                 Notes
               </div>
               <div className="imgText">
@@ -151,11 +128,10 @@ class Apps extends React.Component {
             <div className="dockContainer appContainer">
               <img src="https://cdn.jim-nielsen.com/ios/512/apple-music-2020-09-25.png" />
               <img src="https://static.wikia.nocookie.net/ipod/images/e/e7/YouTube_iOS_2019.png" />
-              <img src="https://aroundsketch.github.io/Apple-App-Icons/App%20Icon/Apple/Phone/%40PNG.png" onClick={this.props.phonecall} />
+              <img src="https://aroundsketch.github.io/Apple-App-Icons/App%20Icon/Apple/Phone/%40PNG.png" onClick={props.phonecall} />
               <img src="https://cdn.jim-nielsen.com/ios/512/instagram-2022-05-19.png" />
             </div>
       </div>)
-  }
 }
 
 export default Phone

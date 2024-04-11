@@ -1,91 +1,77 @@
 import './calculator.css'
 import React from 'react'
+import { useState, useEffect } from "react";
 
-
-class Calculator extends React.Component {
-    constructor(props) {
-      super(props);
-      this.state = {
-        curVal: '0',
-        prevVal: '0',
-        operator: '',
-        formula: '',
-        output: '0'
-      }
-      this.handleNumbers = this.handleNumbers.bind(this);
-      this.handleOperators = this.handleOperators.bind(this);
-      this.handleDecimals = this.handleDecimals.bind(this);
-      this.handleEquals = this.handleEquals.bind(this);
-      this.initialize = this.initialize.bind(this);
-    }
+function Calculator() {
+  const [curVal, setCurVal] = useState('0');
+  const [prevVal, setPrevVal] = useState('0');
+  const [operator, setOperator] = useState('');
+  const [formula, setFormula] = useState('');
+  const [output, setOutput] = useState('0');
     
-    handleNumbers(e) {
+    
+  function handleNumbers(e) {
       const val = e.target.value;
-      const lastIndex = this.state.formula.length;
+      const lastIndex = formula.length;
    
-      if (!this.state.output.includes('DIGIT')) {
-      if (this.state.output.length > 18) {
-        const temp = this.state.output;
-        this.setState(state => ({
-          output: 'DIGIT LIMIT MET'
-        }))
+      if (!output.includes('DIGIT')) {
+      if (output.length > 18) {
+        const temp = output;
+        setOutput('DIGIT LIMIT MET');
+        
         setTimeout(() => {
-          this.setState(state => ({
-            output: temp
-          }))
+          setOutput(temp)
         }, 1500)
         return;
       }
-      if (this.state.output[0] === '0' && this.state.formula === '') {
-        this.setState(state => ({
-          formula: val,
-          operator: '',
-          output: val
-        }))
-      } else if (this.state.output[0] === '0' && this.state.output.length === 1) {
-        this.setState(state => ({
-          formula: state.formula.substring(0, lastIndex - 1) + val,
-          output: val
-        }))
-      } else if (this.state.operator !== '') {
-        this.setState(state => ({
-          formula: state.formula + val,
-          operator: '',
-          output: val
-        }))
+      if (output[0] === '0' && formula === '') {
+        
+          setFormula(val);
+          setOperator('');
+          setOutput(val)
+      } else if (output[0] === '0' && output.length === 1) {
+  
+          setFormula(formula.substring(0, lastIndex - 1) + val);
+          setOutput(val);
+        
+      } else if (operator !== '') {
+        
+          setFormula(formula + val);
+          setOperator('');
+          setOutput(val);
+        
       } else {
-      this.setState(state => ({
-        formula: state.formula + val,
-        operator: '',
-        output: state.output + val
-      }))
-      } 
-     }
-    }
     
-    handleDecimals(e) {
+        setFormula(formula + val);
+        setOperator('');
+        setOutput(output + val);
+      } 
+    }
+  }
+    
+    function handleDecimals(e) {
       const val = e.target.value;
       const regex = /[+/\x-]/;
-      if (!this.state.output.includes('DIGIT')) {
-      if ((this.state.output === '0' && this.state.formula === '') || (regex.test(this.state.output))) {
-        this.setState(state => ({
-          formula: state.formula + '0' + val,
-          operator: '',
-          output: '0' + val
-        }))
-      } else if (!this.state.output.includes(".")) {
-        this.setState(state => ({
-          formula: state.formula + val,
-          operator: '',
-          output: state.output + val
-        }))
+      if (!output.includes('DIGIT')) {
+      if ((output === '0' && formula === '') || (regex.test(output))) {
+        
+          setFormula(formula + '0' + val);
+          setOperator('');
+          setOutput('0' + val);
+        
+      } else if (!output.includes(".")) {
+        
+          setFormula(formula + val);
+          setOperator('');
+          setOutput(output + val);
+        
       }
      }
     }
     
-    handleEquals(e) {
+    function handleEquals(e) {
       const val = e.target.value;
-      const replaced = this.state.formula.replace("x", "*");
+      const replaced = formula.replace("x", "*");
       const regex = /[+/\*-]/;
       let filter = '';
       if (regex.test(replaced[0])) {
@@ -96,143 +82,122 @@ class Calculator extends React.Component {
       const result = eval(filter).toString();
    
      if (result === 'Infinity') {
-       this.setState(state => ({
-           output: 'ERROR'
-         }));
+       setOutput('ERROR');
        setTimeout(() => {
-         this.initialize()
+         initialize()
        }, 1000)
        return;
      }
-      
      
-      if (!this.state.output.includes('DIGIT')) {
-      this.setState(state => ({
-        formula: state.formula + val + result,
-        prevVal: state.curVal,
-        curVal: result,
-        operator: '',
-        output: result
-      }))
+     if (!output.includes('DIGIT')) {
+      
+        setFormula(formula + val + result);
+        setPrevVal(curVal);
+        setCurVal(result);
+        setOperator('');
+        setOutput(result);
+      
      }
     }
     
-    handleOperators(e) {
+    function handleOperators(e) {
       const val = e.target.value;
-      const lastIndex = this.state.formula.length;
-      /* removes . if no following digits */
-      if (this.state.formula[lastIndex - 1] === '.') {
-        this.setState(state => ({
-          formula: state.formula.substring(0, lastIndex - 1)
-        }))
-      } else if (this.state.formula.includes('=')) {
-        this.setState(state => ({
-          formula: state.output  
-        }))
+      const lastIndex = formula.length;
+      let tempFormula = formula;
+
+      if (formula[lastIndex - 1] === '.') {
+        tempFormula = formula.substring(0, lastIndex - 1);
+        
+      } else if (formula.includes('=')) {
+        tempFormula = output;
       }
       
-     if (!this.state.output.includes('DIGIT')) {
-      if (this.state.operator.length === 2) {
-        this.setState(state => ({
-          formula: state.formula.substring(0, lastIndex - 2) + val,
-          operator: val,
-          output: val
-        }))
+      if (!output.includes('DIGIT')) {
+     
+      if (operator.length === 2) {
+       
+          setFormula(tempFormula.substring(0, lastIndex - 2) + val);
+          setOperator(val);
+          setOutput(val);
+      
       } else if (val === '-') {
-        this.setState(state => ({
-          formula: state.formula + val,
-          operator: state.operator + val,
-          output: val
-        }))
-      } else if (this.state.operator !== '') {
-        this.setState(state => ({
-          formula: state.formula.substring(0, lastIndex - 1) + val,
-          operator: val,
-          output: val
-        }))
+          setFormula(tempFormula + val);
+          setOperator(operator + val);
+          setOutput(val);
+        
+      } else if (operator !== '') {
+      
+          setFormula(tempFormula.substring(0, lastIndex - 1) + val);
+          setOperator(val);
+          setOutput(val);
+        
       } else {
-        this.setState(state => ({
-          formula: state.formula + val,
-          operator: val,
-          output: val
-        }))
+        
+          setFormula(tempFormula + val);
+          setOperator(val);
+          setOutput(val);
       }
      }
     }
     
-    initialize() {
-      this.setState({
-        curVal: '0',
-        prevVal: '0',
-        operator: '',
-        formula: '',
-        output: '0'
-      })
+    function initialize() {
+      setCurVal('0');
+      setPrevVal('0');
+      setOperator('');
+      setFormula('');
+      setOutput('0');
     }
-    render() {
-      
-      return (
+    return (
         <div> 
           <div className='calculator'>
-            <Formula formula={this.state.formula} />
-            <Output output={this.state.output} />
-            <Buttons equals={this.handleEquals} decimals={this.handleDecimals} operators={this.handleOperators} numbers={this.handleNumbers} init={this.initialize} />
+            <Formula formula={formula} />
+            <Output output={output} />
+            <Buttons equals={handleEquals} decimals={handleDecimals} operators={handleOperators}
+             numbers={handleNumbers} init={initialize} />
           </div>
-        </div>);
-    }
+        </div>
+        );
   };
   
-  class Formula extends React.Component {
-    constructor(props) {
-      super(props);
-    }
-    render() {
-      return (
+  function Formula(props) {
+    return (
         <div>
           <div className="displayFormula">
-            {this.props.formula}
+            {props.formula}
           </div>
         </div>
       );
-    }
   }
   
-  class Output extends React.Component {
-    constructor(props) {
-      super(props);
-    }
-    render() {
-      return (<div className="displayOutput" id="display">{this.props.output}</div>);
-    }
+  function Output(props) {
+    return (
+    <div className="displayOutput" id="display">{props.output}</div>
+  );
+    
   }
   
-  class Buttons extends React.Component {
-    constructor(props) {
-      super(props);
-    }
-    render() {
-      return (
+  function Buttons(props) {
+    return (
         <div>
-          <button id="clear" className="big greyButton" onClick={this.props.init}>AC</button>
-          <button id="divide" className="greyButton" value="/" onClick={this.props.operators}>/</button>
-          <button id="multiply" className="orangeButton" value="x" onClick={this.props.operators}>x</button>
-          <button id="seven" value="7" onClick={this.props.numbers}>7</button>
-          <button id="eight" value="8" onClick={this.props.numbers}>8</button>
-          <button id="nine" value="9" onClick={this.props.numbers}>9</button>
-          <button id="subtract" className="orangeButton" value="-" onClick={this.props.operators}>-</button>
-          <button id="four" value="4" onClick={this.props.numbers}>4</button>
-          <button id="five" value="5" onClick={this.props.numbers}>5</button>
-          <button id="six" value="6" onClick={this.props.numbers}>6</button>
-          <button id="add" className="orangeButton" value="+" onClick={this.props.operators}>+</button>
-          <button id="one" value="1" onClick={this.props.numbers}>1</button>
-          <button id="two" value="2" onClick={this.props.numbers}>2</button>
-          <button id="three" value="3" onClick={this.props.numbers}>3</button>
-          <button id="equals" className="equal orangeButton" value="=" onClick={this.props.equals}>=</button>
-          <button id="zero" value="0" onClick={this.props.numbers} className="big">0</button>
-          <button id="decimal" value="." onClick={this.props.decimals}>.</button>    
+          <button id="clear" className="big greyButton" onClick={props.init}>AC</button>
+          <button id="divide" className="greyButton" value="/" onClick={props.operators}>/</button>
+          <button id="multiply" className="orangeButton" value="x" onClick={props.operators}>x</button>
+          <button id="seven" value="7" onClick={props.numbers}>7</button>
+          <button id="eight" value="8" onClick={props.numbers}>8</button>
+          <button id="nine" value="9" onClick={props.numbers}>9</button>
+          <button id="subtract" className="orangeButton" value="-" onClick={props.operators}>-</button>
+          <button id="four" value="4" onClick={props.numbers}>4</button>
+          <button id="five" value="5" onClick={props.numbers}>5</button>
+          <button id="six" value="6" onClick={props.numbers}>6</button>
+          <button id="add" className="orangeButton" value="+" onClick={props.operators}>+</button>
+          <button id="one" value="1" onClick={props.numbers}>1</button>
+          <button id="two" value="2" onClick={props.numbers}>2</button>
+          <button id="three" value="3" onClick={props.numbers}>3</button>
+          <button id="equals" className="equal orangeButton" value="=" onClick={props.equals}>=</button>
+          <button id="zero" value="0" onClick={props.numbers} className="big">0</button>
+          <button id="decimal" value="." onClick={props.decimals}>.</button>    
           </div>
       );
-    }
   }
 
   export default Calculator
