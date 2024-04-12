@@ -3,6 +3,7 @@ import reactLogo from './assets/react.svg'
 import viteLogo from '/vite.svg'
 import './App.css'
 import Calculator from './calculator/calculator.jsx'
+import Weather from './weather/weather.jsx'
 import React from 'react'
 
 
@@ -15,6 +16,14 @@ function Phone() {
   const [current, setCurrent] = useState('home');
   const [homeButton, setHomeButton] = useState(false);
 
+  // displaying time in actual format //
+  function handleMinutes(i) {
+    if (i < 10) {
+      i = '0' + i;
+    }
+    return i;
+  }
+
   const handleCalculator = () => {
     setCurrent('calculator');
     setHomeButton(true);
@@ -25,8 +34,14 @@ function Phone() {
     setHomeButton(true);
   }
 
+  
   const handleNotes = () => {
     setCurrent('notes');
+    setHomeButton(true);
+  }
+
+  const handleWeather = () => {
+    setCurrent('weather');
     setHomeButton(true);
   }
 
@@ -34,13 +49,16 @@ function Phone() {
       setCurrent('home');
       setHomeButton(false);
   }
+
     return(
       <div>
         <div className="iPhone">
           {/* change screen background depending on apps*/}
-          <div className="screen" style={(current === 'calculator' || current === 'phonecall') ? {background: "black"} : current === 'notes' ? {background: "beige"} : {}}>
+          <div className="screen" style={(current === 'calculator' || current === 'phonecall') ? {background: "black"} 
+          : current === 'notes' ? {background: "beige"} 
+          : current === 'weather' ? {background: 'linear-gradient(#89CFF0, #7393B3)'} : {}}>
               <div className="topBar" style={current === "notes" ? {color: "black"} : {}} onClick={homeButton ? handleHome : undefined}>
-              <span className="clock">{hours}:{minutes}</span>
+              <span className="clock">{hours}:{handleMinutes(minutes)}</span>
               <span className="icons">
                 <i className="fa-solid fa-signal"></i>
                 <i className="fa-solid fa-wifi"></i>
@@ -48,10 +66,11 @@ function Phone() {
                 </span> 
               </div>
             <div id="contentContainer">
-              {current === 'home' && <Apps calculator={handleCalculator} phonecall={handlePhoneCall} notes={handleNotes} />}
+              {current === 'home' && <Apps weather={handleWeather} calculator={handleCalculator} phonecall={handlePhoneCall} notes={handleNotes} />}
               {current === 'calculator' && <Calculator />}
               {current === 'phonecall' && <PhoneCall />}
-              {current === 'notes' && <Notes />} 
+              {current === 'notes' && <Notes />}
+              {current === 'weather' && <Weather />}
            </div>
           </div>
          </div>
@@ -109,7 +128,7 @@ function Apps(props) {
                 Mail
               </div>
               <div className="imgText">
-            <img src="https://aroundsketch.github.io/Apple-App-Icons/App%20Icon/Apple/Weather/%40PNG.png" />
+            <img onClick={props.weather} src="https://aroundsketch.github.io/Apple-App-Icons/App%20Icon/Apple/Weather/%40PNG.png" />
                 Weather
               </div>
               <div className="imgText">

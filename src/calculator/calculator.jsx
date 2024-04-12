@@ -1,6 +1,6 @@
 import './calculator.css'
 import React from 'react'
-import { useState, useEffect } from "react";
+import { useState } from "react";
 
 function Calculator() {
   const [curVal, setCurVal] = useState('0');
