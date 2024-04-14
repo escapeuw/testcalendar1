@@ -5,8 +5,7 @@
     border: 5px solid black;
     border-radius: 10px;
     background-color: black;
-  }
-  
+
   .displayFormula {
     background-color: black;
     color: orange;
@@ -64,4 +63,5 @@
     height: 180px;
     position: absolute;
   }
+}
   
