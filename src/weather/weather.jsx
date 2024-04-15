@@ -1,21 +1,22 @@
 import './weather.css'
 import React from 'react'
 import { useState } from "react";
+import { useEffect } from 'react';
 
 
 function Weather() {
-    const [defPage, setDefPage] = useState(true);
+    const [isDefault, setIsDefault] = useState(true);
     const [city, setCity] = useState('');
     const [weatherData, setWeatherData] = useState('');
-    const [weatherData2, setWeatherData2] = useState('');
     const [error, setError] = useState();
 
     const handleInput = (e) => {
         setCity(e.target.value);
     }
 
-    const url = `https://weatherapi-com.p.rapidapi.com/current.json?q=${city}`;
-    const defaultUrl = 'https://weatherapi-com.p.rapidapi.com/current.json?q=toronto';
+    const url = `https://weatherapi-com.p.rapidapi.com/forecast.json?q=${city}&days=5`;
+    const defaultUrl = 'https://weatherapi-com.p.rapidapi.com/forecast.json?q=${toronto}&days=5';
+
     const options = {
         method: 'GET',
         headers: {
@@ -24,6 +25,23 @@ function Weather() {
         }
     };
 
+    const defaultScreen = async () => {
+        try {
+            const response = await fetch(defaultUrl, options);
+            //prevent error //
+            if (!response.ok) {
+                throw new Error('Failed to fetch weather data');
+            }
+    
+            const result = await response.json();
+            setWeatherData(result);
+            // default page //
+    
+        } catch (error) {
+            setError(error.message);
+            alert(error.message);
+        }
+    }
 
     const fetchData = async () => {
         try {
@@ -36,44 +54,38 @@ function Weather() {
             const result = await response.json();
             setWeatherData(result);
             console.log(result);
+            setIsDefault(false);
             // default page //
-            setDefPage(false);
 
         } catch (error) {
             setError(error.message);
-            alert('Failed to fetch weather data');
-        }
-
-        const url2 = `https://weatherapi-com.p.rapidapi.com/forecast.json?q=${city}&days=5`;
-
-
-        try {
-            const response = await fetch(url2, options);
-            const result = await response.json();
-            setWeatherData2(result);
-            console.log(result);
-
-        } catch (error) {
-            console.error(error);
+            setCity('');
+            alert(error.message);
         }
         setCity('');
-
     }
+
+    useEffect(() => {
+        defaultScreen();
+      }, []);
 
     return (
         <div className='weatherApp'>
+            
             <div className='container'>
                 <TopContainer handleInput={handleInput} fetchData={fetchData} city={city} />
                 <div className='outputContainer'>
-                    {weatherData2 &&
-                        <CurrentOutput weatherData2={weatherData2} />}
-                    {weatherData2 &&
-                        <Forecast weatherData2={weatherData2} />}
+                    {weatherData &&
+                        <CurrentOutput weatherData={weatherData} />}
+                    {weatherData &&
+                        <Forecast weatherData={weatherData} />}
                 </div>
             </div>
         </div>
     )
 }
+
+
 
 function TopContainer(props) {
     return (
@@ -92,26 +104,48 @@ function CurrentOutput(props) {
         <div class="currentContainer">
             <div className='currentOutput'>
                 <p className='location'>My Location</p>
-                <img src={props.weatherData2.current.condition.icon} alt="icon" />
-                <p className='city'>{props.weatherData2.location.name}</p>
-                <p className='mainTemp'>{props.weatherData2.current.temp_c}°</p>
-                <p>{props.weatherData2.current.condition.text}</p>
-                <p>Feels like: {props.weatherData2.current.feelslike_c}°</p>
+                <img src={props.weatherData.current.condition.icon} alt="icon" />
+                <p className='city'>{props.weatherData.location.name}</p>
+                <p className='mainTemp'>{props.weatherData.current.temp_c}°</p>
+                <p>{props.weatherData.current.condition.text}</p>
+                <p>Feels like: {props.weatherData.current.feelslike_c}°</p>
             </div>
         </div>)
 
 }
 
-function Forecast() {
+function Forecast(props) {
+    const today = props.weatherData.forecast.forecastday[0].hour;
+
+    const getHourly = (arr) => {
+        return (
+            <div className='hourly'>
+            {
+                arr.map((item, i) => (
+                    <div>
+                        <p className='hourlyTime'>{i === 0 ? <span>12AM</span> 
+                        : i === 12 ? <span>12PM</span> 
+                        : i < 12 ? <span>{i}AM</span> 
+                        : <span>{i - 12}PM</span>}</p>
+                        <p><img src={item.condition.icon} alt='icon' /></p>
+                        <p className='hourlyTemp'>{item.temp_c}°</p>
+                    </div>))
+            }
+            </div>
+        )
+    }
     return (
-        <div class='forecastContainer'>
-            <div class='forecast'>
-                <p>Today testingtestingtesting</p>
+        <div className='forecastContainer'>
+                {getHourly(today)}
                 <p>test</p>
                 <p>test</p>
                 <p>test</p>
                 <p>test</p>
-                
+
+            <div>
+                <p>something else</p>
+                <p>something else</p>
+                <p>something else</p>
             </div>
         </div>
     )

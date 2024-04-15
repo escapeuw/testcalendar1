@@ -14,72 +14,76 @@
   width: 450px;
   height: 700px;
 }
-.screen {
-  border: 3px solid black;
-  border-radius: 20px;
-  background: linear-gradient(#eb01a5, #d13531);
-  width: 430px;
-  height: 670px;
-}
-.topBar {
-  display: flex;
-  padding: 10px;
-  margin: auto;
-  color: white;
-  font-weight: bold;
-  justify-content: space-between;
-  width: 90%;
-  height: 30px;
-}
-.fa-solid {
-  font-size: 13px;
-}
-.fa-battery-full {
-  font-size: 16px;
-}
-i {
-  margin: 3px
-}
-.appContainer {
-  display: flex;
-  flex-flow: row wrap;
-  margin-left: 10px;
-}
 
-.imgText {
-  text-align: center;
-  color: white;
-  font-family: -apple-system, BlinkMacSystemFont, sans-serif;
-  font-size: 12px;
-}
+  .screen {
+    border: 3px solid black;
+    border-radius: 20px;
+    background: linear-gradient(#eb01a5, #d13531);
+    width: 430px;
+    height: 670px;
+  }
 
-img {
-  display: block;
-  -webkit-filter: brightness(100%);
-  width: 80px;
-  height: 80px;
-  border-radius: 20px;
-  margin: 10px 10px
-}
+  .topBar {
+    display: flex;
+    padding: 10px;
+    margin: auto;
+    color: white;
+    font-weight: bold;
+    justify-content: space-between;
+    width: 90%;
+    height: 30px;
+  }
 
-.dockContainer {
-  background-color: #922522;
-  border-radius: 20px;
-  margin: auto;
-  width: 95%;
-  padding: 3px 0px;
-  margin-top: 40px;
-}
+  .fa-solid {
+    font-size: 13px;
+  }
 
-img:hover {
-  box-sizing: border-box;
-  background-color: black;
-  -webkit-filter: brightness(70%);
-  -webkit-transition: all 0.2s ease;
-  -moz-transition: all 0.2s ease;
-  -o-transition: all 0.2s ease;
-  -ms-transition: all 0.2s ease;
-  transition: all 0.2s ease;
-}
+  .fa-battery-full {
+    font-size: 16px;
+  }
 
+  i {
+    margin: 3px;
+  }
 
+  .appContainer {
+    display: flex;
+    flex-flow: row wrap;
+    margin-left: 10px;
+  }
+
+  .appContainer .imgText {
+    text-align: center;
+    color: white;
+    font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+    font-size: 12px;
+  }
+
+  .appContainer img {
+    display: block;
+    -webkit-filter: brightness(100%);
+    width: 80px;
+    height: 80px;
+    border-radius: 20px;
+    margin: 10px 10px;
+  }
+
+  .dockContainer {
+    background-color: #922522;
+    border-radius: 20px;
+    margin: auto;
+    width: 95%;
+    padding: 3px 0px;
+    margin-top: 40px;
+  }
+
+  .appContainer img:hover {
+    box-sizing: border-box;
+    background-color: black;
+    -webkit-filter: brightness(70%);
+    -webkit-transition: all 0.2s ease;
+    -moz-transition: all 0.2s ease;
+    -o-transition: all 0.2s ease;
+    -ms-transition: all 0.2s ease;
+    transition: all 0.2s ease;
+  }

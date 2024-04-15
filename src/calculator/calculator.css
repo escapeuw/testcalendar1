@@ -5,8 +5,9 @@
     border: 5px solid black;
     border-radius: 10px;
     background-color: black;
+}
 
-  .displayFormula {
+.calculator .displayFormula {
     background-color: black;
     color: orange;
     text-align: right;
@@ -15,7 +16,7 @@
     overflow-wrap: break-word;
     word-wrap: break-word;
   }
-  .displayOutput {
+  .calculator .displayOutput {
     background-color: black;
     color: white;
     text-align: right;
@@ -25,7 +26,7 @@
     word-wrap: break-word;
   }
   
-  button {
+  .calculator button {
     position: relative;
     width: 105px;
     height: 90px;
@@ -36,32 +37,32 @@
     border: none;
     border-radius: 3px;
   }
-  button:hover {
+  .calculator button:hover {
     border-radius: 5px;
     border: 2px white solid;
     color: black;
   }
-  .greyButton:hover {
+  .calculator .greyButton:hover {
     color: beige;
   }
   
-  .orangeButton {
+  .calculator .orangeButton {
     background-color: orange;
     z-index: 3;
   }
   
-  .greyButton {
+  .calculator .greyButton {
     background-color: #CDCBCB;
     color: black;
   }
   
-  .big {
+  .calculator .big {
     width: 210px;
   }
   
-  .equal {
+  .calculator .equal {
     height: 180px;
     position: absolute;
   }
-}
+
   

@@ -34,7 +34,6 @@ function Phone() {
     setHomeButton(true);
   }
 
-  
   const handleNotes = () => {
     setCurrent('notes');
     setHomeButton(true);
