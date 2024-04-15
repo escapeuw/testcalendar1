@@ -32,11 +32,11 @@ function Weather() {
             if (!response.ok) {
                 throw new Error('Failed to fetch weather data');
             }
-    
+
             const result = await response.json();
             setWeatherData(result);
             // default page //
-    
+
         } catch (error) {
             setError(error.message);
             alert(error.message);
@@ -67,11 +67,11 @@ function Weather() {
 
     useEffect(() => {
         defaultScreen();
-      }, []);
+    }, []);
 
     return (
         <div className='weatherApp'>
-            
+
             <div className='container'>
                 <TopContainer handleInput={handleInput} fetchData={fetchData} city={city} />
                 <div className='outputContainer'>
@@ -101,15 +101,14 @@ function TopContainer(props) {
 
 function CurrentOutput(props) {
     return (
-        <div class="currentContainer">
-            <div className='currentOutput'>
-                <p className='location'>My Location</p>
-                <img src={props.weatherData.current.condition.icon} alt="icon" />
-                <p className='city'>{props.weatherData.location.name}</p>
-                <p className='mainTemp'>{props.weatherData.current.temp_c}°</p>
-                <p>{props.weatherData.current.condition.text}</p>
-                <p>Feels like: {props.weatherData.current.feelslike_c}°</p>
-            </div>
+        <div class="currentOutput">
+            <div className='myLoc'>My Location</div>
+            <img className='mainIcon' src={props.weatherData.current.condition.icon} alt="icon" />
+            <div className='location'>{props.weatherData.location.name}</div>
+            <div className='mainTemp'>{props.weatherData.current.temp_c}°</div>
+            <div className='desc'>{props.weatherData.current.condition.text}</div>
+            <div className='desc'>Feels like: {props.weatherData.current.feelslike_c}°</div>
+
         </div>)
 
 }
@@ -120,27 +119,27 @@ function Forecast(props) {
     const getHourly = (arr) => {
         return (
             <div className='hourly'>
-            {
-                arr.map((item, i) => (
-                    <div>
-                        <p className='hourlyTime'>{i === 0 ? <span>12AM</span> 
-                        : i === 12 ? <span>12PM</span> 
-                        : i < 12 ? <span>{i}AM</span> 
-                        : <span>{i - 12}PM</span>}</p>
-                        <p><img src={item.condition.icon} alt='icon' /></p>
-                        <p className='hourlyTemp'>{item.temp_c}°</p>
-                    </div>))
-            }
+                {
+                    arr.map((item, i) => (
+                        <div>
+                            <p className='hourlyTime'>{i === 0 ? <span>12AM</span>
+                                : i === 12 ? <span>12PM</span>
+                                    : i < 12 ? <span>{i}AM</span>
+                                        : <span>{i - 12}PM</span>}</p>
+                            <p><img src={item.condition.icon} alt='icon' /></p>
+                            <p className='hourlyTemp'>{item.temp_c}°</p>
+                        </div>))
+                }
             </div>
         )
     }
     return (
         <div className='forecastContainer'>
-                {getHourly(today)}
-                <p>test</p>
-                <p>test</p>
-                <p>test</p>
-                <p>test</p>
+            {getHourly(today)}
+            <p>test</p>
+            <p>test</p>
+            <p>test</p>
+            <p>test</p>
 
             <div>
                 <p>something else</p>

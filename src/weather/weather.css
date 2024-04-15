@@ -1,3 +1,4 @@
+
 .weatherApp {
     height: 600px;
     display: flex;
@@ -33,20 +34,28 @@
     .currentOutput {
         text-align: center;
         text-shadow: 0px 1px 4px black;
-    
-       
+        margin: 15px 0px 25px;
+
+    }
+    .myLoc {
+        font-size: 20px;
+        margin-bottom: 10px;
     }
     .location {
         font-size: 25px;
     }
     .mainTemp {
-        font-size: 50px;
+        font-size: 65px;
+    }
+    .desc {
+        font-size: 13px;
     }
 
     .forecastContainer {
         border: 1px solid black;
         border-radius: 10px;
         width: 90%;
+        text-shadow: 0px 1px 1px grey;
     }
 
     p {
@@ -65,3 +74,9 @@
     }
 
 }
+
+.forecastContainer {
+    background: linear-gradient(#6fc5ed, #7393B3);
+    
+}
+

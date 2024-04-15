@@ -2,6 +2,7 @@ import { useState } from 'react'
 import reactLogo from './assets/react.svg'
 import viteLogo from '/vite.svg'
 import './App.css'
+import './assets/sky.jpeg'
 import Calculator from './calculator/calculator.jsx'
 import Weather from './weather/weather.jsx'
 import React from 'react'
@@ -55,7 +56,7 @@ function Phone() {
           {/* change screen background depending on apps*/}
           <div className="screen" style={(current === 'calculator' || current === 'phonecall') ? {background: "black"} 
           : current === 'notes' ? {background: "beige"} 
-          : current === 'weather' ? {background: 'linear-gradient(#89CFF0, #7393B3)'} : {}}>
+          : current === 'weather' ? {backgroundImage: 'url(https://i.pinimg.com/736x/ee/c4/16/eec4169c5e89189f59d86f21829e0454.jpg)'} : {}}>
               <div className="topBar" style={current === "notes" ? {color: "black"} : {}} onClick={homeButton ? handleHome : undefined}>
               <span className="clock">{hours}:{handleMinutes(minutes)}</span>
               <span className="icons">
