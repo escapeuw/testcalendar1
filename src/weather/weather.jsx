@@ -71,7 +71,6 @@ function Weather() {
 
     return (
         <div className='weatherApp'>
-
             <div className='container'>
                 <TopContainer handleInput={handleInput} fetchData={fetchData} city={city} />
                 <div className='outputContainer'>
@@ -115,6 +114,12 @@ function CurrentOutput(props) {
 
 function Forecast(props) {
     const today = props.weatherData.forecast.forecastday[0].hour;
+    const tomorrow = props.weatherData.forecast.forecastday[1].hour;
+    const curTime = props.weatherData.current.last_updated_epoch;
+    const curIndex = today.findIndex(item => item.time_epoch > curTime) - 1;
+    const newToday = today.slice(curIndex);
+    const newTomorrow = tomorrow.slice(0, curIndex + 1);
+    const newArr = [...newToday, ...newTomorrow];
 
     const getHourly = (arr) => {
         return (
@@ -122,20 +127,59 @@ function Forecast(props) {
                 {
                     arr.map((item, i) => (
                         <div>
-                            <p className='hourlyTime'>{i === 0 ? <span>12AM</span>
-                                : i === 12 ? <span>12PM</span>
-                                    : i < 12 ? <span>{i}AM</span>
-                                        : <span>{i - 12}PM</span>}</p>
-                            <p><img src={item.condition.icon} alt='icon' /></p>
-                            <p className='hourlyTemp'>{item.temp_c}°</p>
+                            <div className='hourlyTime'>{(i === 0) ? <span>Now</span>
+                                : ((i + curIndex) === 0 || (i + curIndex) === 24) ? <span>12<span className='ampm'>AM</span></span>
+                                    : ((i + curIndex) === 12) ? <span>12<span className='ampm'>PM</span></span>
+                                        : ((i + curIndex) < 12) ? <span>{i + curIndex}<span className='ampm'>AM</span></span>
+                                            : ((i + curIndex) > 24) ? <span>{i - (24 - curIndex)}<span class='ampm'>AM</span></span>
+                                                : <span>{(i + curIndex) - 12}<span className='ampm'>PM</span></span>}</div>
+                            <div><img src={item.condition.icon} alt='icon' /></div>
+                            <div className='hourlyTemp'>{item.temp_c}°</div>
                         </div>))
                 }
             </div>
         )
     }
+
+    const getDay = (input) => {
+        let date = new Date(input);
+        date.setDate(date.getDate() + 1);
+        const stringDate = date.toString();
+        const day = stringDate.slice(0, 3);
+        return day;
+    }
+
+
+    const getDaily = (arr) => {
+        return (
+            <div className='daily'>
+
+            </div>
+        )
+    }
+
     return (
         <div className='forecastContainer'>
-            {getHourly(today)}
+            {getHourly(newArr)}
+            <div className='dailyContainer'>
+                <div className='daily'>
+                    <div>Today</div>
+                    <div><img src={props.weatherData.forecast.forecastday[0].day.condition.icon} alt='icon' width={40} /></div>
+                    <div><span className='ampm'>Min</span> {props.weatherData.forecast.forecastday[0].day.mintemp_c}° ~ <span className='ampm'>Max</span> {props.weatherData.forecast.forecastday[0].day.maxtemp_c}°</div>
+                </div>
+                <hr></hr>
+                <div className='daily'>
+                    <div>{getDay(props.weatherData.forecast.forecastday[1].date)}</div>
+                    <div><img src={props.weatherData.forecast.forecastday[1].day.condition.icon} alt='icon' width={40} /></div>
+                    <div><span className='ampm'>Min</span> {props.weatherData.forecast.forecastday[1].day.mintemp_c}° ~ <span className='ampm'>Max</span> {props.weatherData.forecast.forecastday[1].day.maxtemp_c}°</div>
+                </div>
+                <hr></hr>
+                <div className='daily'>
+                    <div>{getDay(props.weatherData.forecast.forecastday[2].date)}</div>
+                    <div><img src={props.weatherData.forecast.forecastday[2].day.condition.icon} alt='icon' width={40}  /></div>
+                    <div><span className='ampm'>Min</span> {props.weatherData.forecast.forecastday[2].day.mintemp_c}° ~ <span className='ampm'>Max</span> {props.weatherData.forecast.forecastday[2].day.maxtemp_c}°</div>
+                </div>
+            </div>
             <p>test</p>
             <p>test</p>
             <p>test</p>

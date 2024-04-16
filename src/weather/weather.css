@@ -1,82 +1,118 @@
-
 .weatherApp {
     height: 600px;
     display: flex;
     justify-content: center;
     font-family: -apple-system, BlinkMacSystemFont, sans-serif;
     color: white;
-    
-    .search {
-        font-size: 15px;
-        height: 20px;
-        margin-left: 5px;
-    }
-    input {
-        width: 200px;
-    }
-    .searchContainer {
-        height: 30px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
+}
 
-    }
-    .outputContainer {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        position: relative;
-        overflow-y: auto;
-        height: 95%;
-        width: 420px;
-    }
+.search {
+    font-size: 15px;
+    height: 20px;
+    margin-left: 5px;
+}
 
-    .currentOutput {
-        text-align: center;
-        text-shadow: 0px 1px 4px black;
-        margin: 15px 0px 25px;
+input {
+    width: 200px;
+}
 
-    }
-    .myLoc {
-        font-size: 20px;
-        margin-bottom: 10px;
-    }
-    .location {
-        font-size: 25px;
-    }
-    .mainTemp {
-        font-size: 65px;
-    }
-    .desc {
-        font-size: 13px;
-    }
+.searchContainer {
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 
-    .forecastContainer {
-        border: 1px solid black;
-        border-radius: 10px;
-        width: 90%;
-        text-shadow: 0px 1px 1px grey;
-    }
+}
 
-    p {
-        border: 1px solid black;
-    }
-    
-    span {
-        font-size: 13px;
-    }
+.weatherApp .outputContainer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: relative;
+    overflow-y: auto;
+    height: 95%;
+    width: 420px;
+    -ms-overflow-style: none;  /* Internet Explorer 10+ */
+    scrollbar-width: none;
+}
+.outputContainer::-webkit-scrollbar { 
+    display: none;  /* Safari and Chrome */
+}
 
-    .hourly {
-        display: flex;
-        overflow-x: auto;
-        text-align: center;
-        width: 100%;
-    }
+.currentOutput {
+    text-align: center;
+    text-shadow: 0px 1px 4px black;
+    margin: 15px 0px 45px;
 
+}
+
+.myLoc {
+    font-size: 20px;
+    margin-bottom: 10px;
+}
+
+.location {
+    font-size: 25px;
+}
+
+.mainTemp {
+    font-size: 65px;
+}
+
+.desc {
+    font-size: 13px;
 }
 
 .forecastContainer {
-    background: linear-gradient(#6fc5ed, #7393B3);
+    border-radius: 10px;
+    width: 90%;
+    text-shadow: 0px 1px 1px grey;
+}
+
+span {
+    font-size: 15px;
+}
+
+.hourly {
+    display: flex;
+    overflow-x: auto;
+    text-align: center;
+    padding: 10px 0px;
+    border-radius: 10px;
+    margin-bottom: 10px;
+    -ms-overflow-style: none;  /* Internet Explorer 10+ */
+    scrollbar-width: none;
+    border: 1px dotted black;
+    background: linear-gradient(rgba(24, 94, 139, 0.3),rgba(31, 124, 226, 0.3));
+   
+}
+
+.hourly::-webkit-scrollbar { 
+    display: none;  /* Safari and Chrome */
+}
+
+.ampm {
+    font-size: 10px;
+}
+
+.daily {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 15px;
+    padding: 0px 10px;
+    width: 95%;
+
+}
+hr {
+    width: 90%;
+    border: 1px solid rgba(255, 255, 255, 0.25);
     
 }
 
+.dailyContainer {
+    border: 1px dotted black;
+    border-radius: 10px;
+    background: linear-gradient(rgba(24, 94, 139, 0.2),rgba(31, 124, 226, 0.3));
+}
