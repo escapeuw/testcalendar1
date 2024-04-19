@@ -3,8 +3,9 @@ import reactLogo from './assets/react.svg'
 import viteLogo from '/vite.svg'
 import './App.css'
 import './assets/sky.jpeg'
-import Calculator from './calculator/calculator.jsx'
-import Weather from './weather/weather.jsx'
+import Calculator from './calculator/calculator.jsx';
+import Weather from './weather/weather.jsx';
+import YouTube from './youtube/youtube.jsx';
 import React from 'react'
 
 
@@ -30,8 +31,8 @@ function Phone() {
     setHomeButton(true);
   }
 
-  const handlePhoneCall = () => {
-    setCurrent('phonecall');
+  const handleYouTube = () => {
+    setCurrent('youtube');
     setHomeButton(true);
   }
 
@@ -45,6 +46,7 @@ function Phone() {
     setHomeButton(true);
   }
 
+
   const handleHome = () => {
       setCurrent('home');
       setHomeButton(false);
@@ -54,7 +56,7 @@ function Phone() {
       <div>
         <div className="iPhone">
           {/* change screen background depending on apps*/}
-          <div className="screen" style={(current === 'calculator' || current === 'phonecall') ? {background: "black"} 
+          <div className="screen" style={(current === 'calculator' || current === 'youtube') ? {background: "black"} 
           : current === 'notes' ? {background: "beige"} 
           : current === 'weather' ? {backgroundImage: 'url(https://i.pinimg.com/736x/ee/c4/16/eec4169c5e89189f59d86f21829e0454.jpg)'} : {}}>
               <div className="topBar" style={current === "notes" ? {color: "black"} : {}} onClick={homeButton ? handleHome : undefined}>
@@ -66,9 +68,9 @@ function Phone() {
                 </span> 
               </div>
             <div id="contentContainer">
-              {current === 'home' && <Apps weather={handleWeather} calculator={handleCalculator} phonecall={handlePhoneCall} notes={handleNotes} />}
+              {current === 'home' && <Apps youtube={handleYouTube} weather={handleWeather} calculator={handleCalculator} notes={handleNotes} />}
               {current === 'calculator' && <Calculator />}
-              {current === 'phonecall' && <PhoneCall />}
+              {current === 'youtube' && <YouTube />}
               {current === 'notes' && <Notes />}
               {current === 'weather' && <Weather />}
            </div>
@@ -146,7 +148,7 @@ function Apps(props) {
             </div>
             <div className="dockContainer appContainer">
               <img src="https://cdn.jim-nielsen.com/ios/512/apple-music-2020-09-25.png" />
-              <img src="https://static.wikia.nocookie.net/ipod/images/e/e7/YouTube_iOS_2019.png" />
+              <img src="https://static.wikia.nocookie.net/ipod/images/e/e7/YouTube_iOS_2019.png" onClick={props.youtube} />
               <img src="https://aroundsketch.github.io/Apple-App-Icons/App%20Icon/Apple/Phone/%40PNG.png" onClick={props.phonecall} />
               <img src="https://cdn.jim-nielsen.com/ios/512/instagram-2022-05-19.png" />
             </div>
