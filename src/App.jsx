@@ -5,7 +5,7 @@ import './App.css'
 import './assets/sky.jpeg'
 import Calculator from './calculator/calculator.jsx';
 import Weather from './weather/weather.jsx';
-import YouTube from './youtube/youtube.jsx';
+import YouTube from './youtube/youtube.jsx'
 import React from 'react'
 
 
