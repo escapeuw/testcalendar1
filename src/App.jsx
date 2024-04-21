@@ -86,71 +86,71 @@ function Apps(props) {
     return(
       <div>
         <div className="appContainer">
-              <div className="imgText"><img src="https://aroundsketch.github.io/Apple-App-Icons/App%20Icon/Apple/Messages/%40PNG.png" />
+              <div className="imgText"><img src="./src/assets/messageicon.png" />
                 Messages
               </div>
               <div className="imgText">
-              <img src="https://aroundsketch.github.io/Apple-App-Icons/App%20Icon/Apple/AppStore/%40PNG.png" />
+              <img src="./src/assets/appstoreicon.png" />
                 AppStore
               </div>
               <div className="imgText">
-              <img src="https://aroundsketch.github.io/Apple-App-Icons/App%20Icon/Apple/Photos/%40PNG.png" />
+              <img src="./src/assets/photo.png" />
                 Photos
               </div>
               <div className="imgText">
-            <img src="https://aroundsketch.github.io/Apple-App-Icons/App%20Icon/Apple/Safari/%40PNG.png" />
+            <img src="./src/assets/safari.png" />
                 Safari
               </div>
               <div className="imgText">
-            <img onClick={props.calculator} src="https://aroundsketch.github.io/Apple-App-Icons/App%20Icon/Apple/Calculator/%40PNG.png" />
+            <img onClick={props.calculator} src="./src/assets/calculator.png" />
                 Calculator
               </div>
               <div className="imgText">
-            <img onClick={props.notes} src="https://aroundsketch.github.io/Apple-App-Icons/App%20Icon/Apple/Notes/%40PNG.png" />
+            <img onClick={props.notes} src="./src/assets/notes.png" />
                 Notes
               </div>
               <div className="imgText">
-            <img src="https://aroundsketch.github.io/Apple-App-Icons/App%20Icon/Apple/Calendar/%40PNG.png" />
+            <img src="./src/assets/calender.png" />
                 Calender
               </div>
               <div className="imgText">
-            <img src="https://aroundsketch.github.io/Apple-App-Icons/App%20Icon/Apple/Camera/%40PNG.png" />
+            <img src="./src/assets/camera.png" />
                 Camera
               </div>
               <div className="imgText">
-            <img src="https://aroundsketch.github.io/Apple-App-Icons/App%20Icon/Apple/Settings/%40PNG.png" />
+            <img src="./src/assets/setting.png" />
                 Settings
               </div>
               <div className="imgText">
-            <img src="https://aroundsketch.github.io/Apple-App-Icons/App%20Icon/Apple/Maps/%40PNG.png" />
+            <img src="./src/assets/map.png" />
                 Maps
               </div>
               <div className="imgText">
-            <img src="https://aroundsketch.github.io/Apple-App-Icons/App%20Icon/Apple/Mail/%40PNG.png" />
+            <img src="./src/assets/mail.png" />
                 Mail
               </div>
               <div className="imgText">
-            <img onClick={props.weather} src="https://aroundsketch.github.io/Apple-App-Icons/App%20Icon/Apple/Weather/%40PNG.png" />
+            <img onClick={props.weather} src="./src/assets/weather.png" />
                 Weather
               </div>
               <div className="imgText">
-            <img src="https://aroundsketch.github.io/Apple-App-Icons/App%20Icon/Apple/Clock/%40PNG.png" />
+            <img src="./src/assets/clock.png" />
                 Clock
               </div>
               <div className="imgText">
-            <img src="https://aroundsketch.github.io/Apple-App-Icons/App%20Icon/Apple/Stocks/%40PNG.png" />
+            <img src="./src/assets/stock.png" />
                 Stocks
               </div>
               <div className="imgText">
-                <img src="https://aroundsketch.github.io/Apple-App-Icons/App%20Icon/Apple/Wallet/%40PNG.png" />
+                <img src="./src/assets/wallet.png" />
                 Wallet
               </div>
             </div>
             <div className="dockContainer appContainer">
-              <img src="https://cdn.jim-nielsen.com/ios/512/apple-music-2020-09-25.png" />
-              <img src="https://static.wikia.nocookie.net/ipod/images/e/e7/YouTube_iOS_2019.png" onClick={props.youtube} />
-              <img src="https://aroundsketch.github.io/Apple-App-Icons/App%20Icon/Apple/Phone/%40PNG.png" onClick={props.phonecall} />
-              <img src="https://cdn.jim-nielsen.com/ios/512/instagram-2022-05-19.png" />
+              <img src="./src/assets/music.jpeg" />
+              <img src="./src/assets/youtube.png" onClick={props.youtube} />
+              <img src="./src/assets/phone.png" onClick={props.phonecall} />
+              <img src="./src/assets/instagram.jpeg" />
             </div>
       </div>)
 }
