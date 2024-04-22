@@ -45,6 +45,9 @@ const testurl = `https://www.googleapis.com/youtube/v3/videoCategories?key=${API
 
 
 
+
+
+
 function numberFormat(strNum) {
     var num = parseInt(strNum);
     if (num >= 1000000) {
@@ -58,12 +61,13 @@ function numberFormat(strNum) {
 
 
 const popurl = `https://youtube.googleapis.com/youtube/v3/videos?key=${API}&chart=mostPopular&part=snippet,statistics,contentDetails&maxResults=3`;
+const testchannelurl = `https://youtube.googleapis.com/youtube/v3/channels?key=${API}&id=UCurvRE5fGcdUgCYWgh-BDsg&part=snippet`;
+
 
 function YouTube() {
     const [videos, setVideos] = useState([]);
-    const [channels, setChannels] = useState([]);
     const [category, setCategory] = useState('all');
-    const [temp, setTemp] = useState('')
+    const [temp, setTemp] = useState('');
 
     function navbar() {
         return (
@@ -74,48 +78,61 @@ function YouTube() {
         )
     }
 
-
-
-
     const fetchData = async () => {
         //fetch data and store it in state
-        fetch(popurl)
-        .then((res) => res.json())
-        .then(resJson => {
-            const result = resJson.items.map(item => ({
-                ...item,
-                channelThumbnail: getChannelIcon(item)
-            }));
-            setVideos(result);
-            console.log(result);
+        const response = await fetch(popurl);
+        const resJson = await response.json();
+        const result = resJson.items;
+       
+        result.map(item => {
+            let channelurl = `https://youtube.googleapis.com/youtube/v3/channels?key=${API}&id=${item.snippet.channelId}&part=snippet,id`;
+            fetch(channelurl)
+            .then(res => res.json())
+            .then(resJson => {
+                const channelResult = resJson.items;
+                item.channelInfo = channelResult[0];
+            })
         })
+        setVideos(result);
+        console.log(result);
     }
 
-    const getChannelIcon = (video_data) => {
-        fetch(`https://youtube.googleapis.com/youtube/v3/channels?id=${video_data.snippet.channelId}&part=snippet&key=${API}`)
-        .then(res => res.json())
-        .then(data => data.items[0].snippet.thumbnails.default.url)
-    }
 
-/*
-    const fetchChannelData = async () => {
-        var temp = [];
-            videos.map(item => {
-                    var channelurl = `https://youtube.googleapis.com/youtube/v3/channels?id=${item.snippet.channelId}&part=snippet&maxResults=10&key=${API}`;
-                    fetch(channelurl).then((res) => res.json()).then((resJson) => {
-                        const result = resJson.items;
-                        temp.push(result[0]);
-                    })
-                });
-            setChannels(temp);
-    }
+   
+    /*
+    fetch(popurl)
+    .then((res) => res.json())
+    .then(resJson => {
+        const result = resJson.items.map(item => ({
+            ...item,
+            channelThumbnail: getChannelIcon(item)
+        }));
+        setVideos(result);
+        console.log(result);
+    })
+}
 
+const getChannelIcon = (video_data) => {
+    fetch(`https://youtube.googleapis.com/youtube/v3/channels?id=${video_data.snippet.channelId}&part=snippet&key=${API}`)
+    .then(res => res.json())
+    .then(data => data.items[0].snippet.thumbnails.default.url)
+}
+
+
+const fetchChannelData = async () => {
+    var temp = [];
+        videos.map(item => {
+                var channelurl = `https://youtube.googleapis.com/youtube/v3/channels?id=${item.snippet.channelId}&part=snippet&maxResults=10&key=${API}`;
+                fetch(channelurl).then((res) => res.json()).then((resJson) => {
+                    const result = resJson.items;
+                    temp.push(result[0]);
+                })
+            });
+        setChannels(temp);
 */
-
     useEffect(() => {
         fetchData();
     }, []);
-
 
 
     function handleCategory() {
@@ -166,8 +183,6 @@ function YouTube() {
 
 
 
-
-    
     return (
         <div className='youtube'>
             <div className='ytContainer'>
@@ -179,7 +194,7 @@ function YouTube() {
                             <div className='vidContainer'>
                                 <img className='thumbnail' src={item.snippet.thumbnails.maxres.url} alt='thumbnail' />
                                 <div className='infoContainer'>
-                                    <div className='pfpic'>pfpic</div>
+                                    <div className='pfpic'>pfPic{item.channelInfo}</div>
                                     <div>
                                         <div className='vidTitle'>{item.snippet.title}</div>
                                         <div className='vidTitleChild'>{item.snippet.channelTitle} · {numberFormat(item.statistics.viewCount)} views · {moment(item.snippet.publishedAt).fromNow()}</div>
