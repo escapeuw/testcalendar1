@@ -42,7 +42,8 @@ const YouTubetest = () => {
 
 const testurl = `https://www.googleapis.com/youtube/v3/videoCategories?key=${API}&Id=20&part=snippet&regionCode=US&maxResult=20`
 
-const popurl = `https://youtube.googleapis.com/youtube/v3/videos?key=${API}&chart=mostPopular&part=snippet,statistics,contentDetails&maxResults=10`;
+
+
 
 function numberFormat(strNum) {
     var num = parseInt(strNum);
@@ -56,10 +57,13 @@ function numberFormat(strNum) {
 }
 
 
+const popurl = `https://youtube.googleapis.com/youtube/v3/videos?key=${API}&chart=mostPopular&part=snippet,statistics,contentDetails&maxResults=3`;
 
 function YouTube() {
     const [videos, setVideos] = useState([]);
+    const [channels, setChannels] = useState([]);
     const [category, setCategory] = useState('all');
+    const [temp, setTemp] = useState('')
 
     function navbar() {
         return (
@@ -71,17 +75,47 @@ function YouTube() {
     }
 
 
-    const fetchData = async (input) => {
+
+
+    const fetchData = async () => {
         //fetch data and store it in state
-        fetch(popurl).then((res) => res.json()).then((resJson) => {
-            const result = resJson.items;
-            console.log(result);
+        fetch(popurl)
+        .then((res) => res.json())
+        .then(resJson => {
+            const result = resJson.items.map(item => ({
+                ...item,
+                channelThumbnail: getChannelIcon(item)
+            }));
             setVideos(result);
+            console.log(result);
         })
     }
+
+    const getChannelIcon = (video_data) => {
+        fetch(`https://youtube.googleapis.com/youtube/v3/channels?id=${video_data.snippet.channelId}&part=snippet&key=${API}`)
+        .then(res => res.json())
+        .then(data => data.items[0].snippet.thumbnails.default.url)
+    }
+
+/*
+    const fetchChannelData = async () => {
+        var temp = [];
+            videos.map(item => {
+                    var channelurl = `https://youtube.googleapis.com/youtube/v3/channels?id=${item.snippet.channelId}&part=snippet&maxResults=10&key=${API}`;
+                    fetch(channelurl).then((res) => res.json()).then((resJson) => {
+                        const result = resJson.items;
+                        temp.push(result[0]);
+                    })
+                });
+            setChannels(temp);
+    }
+
+*/
+
     useEffect(() => {
         fetchData();
     }, []);
+
 
 
     function handleCategory() {
@@ -104,8 +138,6 @@ function YouTube() {
         const sportsVideo = () => {
             setCategory('sports');
         }
-
-        console.log(category);
         return (
             <div className='category'>
                 <div onClick={allVideo} className='categoryBlocks' style={(category === 'all') ? style : {}}>All</div>
@@ -135,6 +167,7 @@ function YouTube() {
 
 
 
+    
     return (
         <div className='youtube'>
             <div className='ytContainer'>
@@ -146,7 +179,7 @@ function YouTube() {
                             <div className='vidContainer'>
                                 <img className='thumbnail' src={item.snippet.thumbnails.maxres.url} alt='thumbnail' />
                                 <div className='infoContainer'>
-                                    <div className='pfpic'>=picture=</div>
+                                    <div className='pfpic'>pfpic</div>
                                     <div>
                                         <div className='vidTitle'>{item.snippet.title}</div>
                                         <div className='vidTitleChild'>{item.snippet.channelTitle} · {numberFormat(item.statistics.viewCount)} views · {moment(item.snippet.publishedAt).fromNow()}</div>
