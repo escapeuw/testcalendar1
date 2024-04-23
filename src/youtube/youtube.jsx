@@ -4,8 +4,6 @@ import { useState } from "react";
 import { useEffect } from 'react';
 import moment from 'moment'
 
-
-
 const API = 'AIzaSyAeX_TNIxeprj21DmFdv1N6JmrSy9DS0fc';
 const channelId = 'UCyqmsSDVwQKnlzz7xCUoG8g';
 
@@ -40,7 +38,7 @@ const YouTubetest = () => {
     )
 }
 
-const testurl = `https://www.googleapis.com/youtube/v3/videoCategories?key=${API}&Id=20&part=snippet&regionCode=US&maxResult=20`
+const testurl = `https://www.googleapis.com/youtube/v3/videoCategories?key=${API}&Id=20&part=snippet&regionCode=US&maxResult=5`
 
 
 
@@ -60,7 +58,7 @@ function numberFormat(strNum) {
 }
 
 
-const popurl = `https://youtube.googleapis.com/youtube/v3/videos?key=${API}&chart=mostPopular&part=snippet,statistics,contentDetails&maxResults=3`;
+const popurl = `https://youtube.googleapis.com/youtube/v3/videos?key=${API}&chart=mostPopular&part=snippet,statistics,contentDetails&maxResults=5`;
 const testchannelurl = `https://youtube.googleapis.com/youtube/v3/channels?key=${API}&id=UCurvRE5fGcdUgCYWgh-BDsg&part=snippet`;
 
 
@@ -68,6 +66,12 @@ function YouTube() {
     const [videos, setVideos] = useState([]);
     const [category, setCategory] = useState('all');
     const [temp, setTemp] = useState('');
+    const [channels, setChannels] = useState(null);
+
+    useEffect(() => {
+        fetchData();
+    }, []);
+
 
     function navbar() {
         return (
@@ -83,19 +87,27 @@ function YouTube() {
         const response = await fetch(popurl);
         const resJson = await response.json();
         const result = resJson.items;
-       
-        result.map(item => {
-            let channelurl = `https://youtube.googleapis.com/youtube/v3/channels?key=${API}&id=${item.snippet.channelId}&part=snippet,id`;
-            fetch(channelurl)
-            .then(res => res.json())
-            .then(resJson => {
-                const channelResult = resJson.items;
-                item.channelInfo = channelResult[0];
-            })
-        })
-        setVideos(result);
         console.log(result);
+        setVideos(result);
+       
+        const channelResult = await Promise.all(
+            result.map(item => {
+                return fetchOtherData(item);
+            })
+        )
+        console.log(channelResult);
+        setChannels(channelResult);
+       
     }
+
+    const fetchOtherData = async (item) => {
+        let channelurl = `https://youtube.googleapis.com/youtube/v3/channels?key=${API}&id=${item.snippet.channelId}&part=snippet,id`;
+        const response = await fetch(channelurl);
+        const resJson = await response.json();
+        const channelResult = resJson.items;
+        return channelResult[0];
+    }
+
 
 
    
@@ -130,10 +142,6 @@ const fetchChannelData = async () => {
             });
         setChannels(temp);
 */
-    useEffect(() => {
-        fetchData();
-    }, []);
-
 
     function handleCategory() {
 
@@ -189,12 +197,12 @@ const fetchChannelData = async () => {
                 {navbar()}
                 {handleCategory()}
                 <div className='contentScreen'>
-                    {videos.map(item => {
+                    {(channels) && videos.map((item, index) => {
                         return (
                             <div className='vidContainer'>
                                 <img className='thumbnail' src={item.snippet.thumbnails.maxres.url} alt='thumbnail' />
                                 <div className='infoContainer'>
-                                    <div className='pfpic'>pfPic{item.channelInfo}</div>
+                                    <div className='pfpic'><img className='channelThumbnail' src={channels[index].snippet.thumbnails.default.url} alt='thumbnail' /></div>
                                     <div>
                                         <div className='vidTitle'>{item.snippet.title}</div>
                                         <div className='vidTitleChild'>{item.snippet.channelTitle} · {numberFormat(item.statistics.viewCount)} views · {moment(item.snippet.publishedAt).fromNow()}</div>
