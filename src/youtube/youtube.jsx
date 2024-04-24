@@ -4,7 +4,8 @@ import { useState } from "react";
 import { useEffect } from 'react';
 import moment from 'moment'
 
-const API = 'AIzaSyAeX_TNIxeprj21DmFdv1N6JmrSy9DS0fc';
+const API = 'AIzaSyAzrJl-vTFKi4Npzq7jZWQMl6C0_7N7Jyg';
+
 const channelId = 'UCyqmsSDVwQKnlzz7xCUoG8g';
 
 
@@ -38,12 +39,6 @@ const YouTubetest = () => {
     )
 }
 
-const testurl = `https://www.googleapis.com/youtube/v3/videoCategories?key=${API}&Id=20&part=snippet&regionCode=US&maxResult=5`
-
-
-
-
-
 
 
 function numberFormat(strNum) {
@@ -58,49 +53,89 @@ function numberFormat(strNum) {
 }
 
 
-const popurl = `https://youtube.googleapis.com/youtube/v3/videos?key=${API}&chart=mostPopular&part=snippet,statistics,contentDetails&maxResults=5`;
+
 const testchannelurl = `https://youtube.googleapis.com/youtube/v3/channels?key=${API}&id=UCurvRE5fGcdUgCYWgh-BDsg&part=snippet`;
 
 
 function YouTube() {
-    const [videos, setVideos] = useState([]);
-    const [category, setCategory] = useState('all');
-    const [temp, setTemp] = useState('');
+    const [videos, setVideos] = useState(null);
     const [channels, setChannels] = useState(null);
+    const [category, setCategory] = useState('0');
+    const [dock, setDock] = useState('home');
+    const [keyword, setKeyword] = useState('');
+    const [searchVideos, setSearchVideos] = useState(null);
+    const [searchChannels, setSearchChannels] = useState(null);
 
     useEffect(() => {
-        fetchData();
-    }, []);
+        fetchData(category_url);
+    }, [category]);
+
+    function handleSearch(e) {
+        setKeyword(e.target.value);
+        console.log(e.target.value);
+    }
 
 
     function navbar() {
         return (
             <div className='navbar'>
                 <img className='ytlogo' src='./src/assets/ytlogo.png' alt='logo' />
-                <div className='inputContainer'><input placeholder='Search'></input><i className="fa-solid fa-magnifying-glass"></i></div>
+                <div className='inputContainer'><input placeholder='Search' onChange={handleSearch}
+                    onKeyDown={e => {
+                        if (e.code === "Enter") {
+                            setDock('search');
+                            fetchSearchData(search_url);
+                        }
+                    }} /><i className="fa-solid fa-magnifying-glass"></i></div>
             </div>
         )
     }
+    const category_url = `https://youtube.googleapis.com/youtube/v3/videos?key=${API}&chart=mostPopular&videoCategoryId=${category}&part=snippet,statistics,contentDetails&maxResults=2`
+    const search_url = `https://www.googleapis.com/youtube/v3/search?part=snippet&maxResults=5&q=${keyword}&type=video&key=${API}`
 
-    const fetchData = async () => {
+    const fetchSearchData = async (url) => {
+        const response = await fetch(url);
+        const resJson = await response.json();
+        const result = resJson.items;
+
+        const channelResult = await Promise.all(
+            result.map(item => {
+                fetch(`https://www.googleapis.com/youtube/v3/videos?key=${API}&id=${item.id.videoId}&part=statistics`)
+                .then(res => res.json())
+                .then(resJson => {
+                    item.statistics = resJson.items[0].statistics;
+                })
+                return fetchChannelData(item);
+            })
+        )
+        console.log(result);
+        setSearchVideos(result);
+        console.log(channelResult);
+        setSearchChannels(channelResult);
+
+    }
+
+    const fetchData = async (url) => {
+
         //fetch data and store it in state
-        const response = await fetch(popurl);
+        const response = await fetch(url);
         const resJson = await response.json();
         const result = resJson.items;
         console.log(result);
         setVideos(result);
-       
+
         const channelResult = await Promise.all(
             result.map(item => {
-                return fetchOtherData(item);
+                return fetchChannelData(item);
             })
         )
         console.log(channelResult);
         setChannels(channelResult);
-       
+        
+
     }
 
-    const fetchOtherData = async (item) => {
+    const fetchChannelData = async (item) => {
         let channelurl = `https://youtube.googleapis.com/youtube/v3/channels?key=${API}&id=${item.snippet.channelId}&part=snippet,id`;
         const response = await fetch(channelurl);
         const resJson = await response.json();
@@ -110,77 +145,37 @@ function YouTube() {
 
 
 
-   
-    /*
-    fetch(popurl)
-    .then((res) => res.json())
-    .then(resJson => {
-        const result = resJson.items.map(item => ({
-            ...item,
-            channelThumbnail: getChannelIcon(item)
-        }));
-        setVideos(result);
-        console.log(result);
-    })
-}
-
-const getChannelIcon = (video_data) => {
-    fetch(`https://youtube.googleapis.com/youtube/v3/channels?id=${video_data.snippet.channelId}&part=snippet&key=${API}`)
-    .then(res => res.json())
-    .then(data => data.items[0].snippet.thumbnails.default.url)
-}
-
-
-const fetchChannelData = async () => {
-    var temp = [];
-        videos.map(item => {
-                var channelurl = `https://youtube.googleapis.com/youtube/v3/channels?id=${item.snippet.channelId}&part=snippet&maxResults=10&key=${API}`;
-                fetch(channelurl).then((res) => res.json()).then((resJson) => {
-                    const result = resJson.items;
-                    temp.push(result[0]);
-                })
-            });
-        setChannels(temp);
-*/
-
     function handleCategory() {
-
         const style = { background: 'white', color: '#202121', pointerEvents: 'none' };
 
-        const allVideo = () => {
-            setCategory('all');
-            // fetchData('all');
-            //fix
-        }
-        const gamingVideo = () => {
-            setCategory('gaming');
-            // fetchData('all');
-            //fix
-        }
-        const musicVideo = () => {
-            setCategory('music');
-        }
-        const sportsVideo = () => {
-            setCategory('sports');
-        }
         return (
             <div className='category'>
-                <div onClick={allVideo} className='categoryBlocks' style={(category === 'all') ? style : {}}>All</div>
-                <div onClick={gamingVideo} className='categoryBlocks' style={(category === 'gaming') ? style : {}}>Gaming</div>
-                <div onClick={musicVideo} className='categoryBlocks' style={(category === 'music') ? style : {}}>Music</div>
-                <div onClick={sportsVideo} className='categoryBlocks' style={(category === 'sports') ? style : {}}>Sports</div>
-                <div className='categoryBlocks'> category4</div>
-                <div className='categoryBlocks'>categorytest</div>
-                <div className='categoryBlocks'>categorytest</div>
-                <div className='categoryBlocks'>categorytest</div>
+                <div onClick={() => setCategory('0')} className='categoryBlocks' style={(category === '0') ? style : {}}>All</div>
+                <div onClick={() => setCategory('20')} className='categoryBlocks' style={(category === '20') ? style : {}}>Gaming</div>
+                <div onClick={() => setCategory('10')} className='categoryBlocks' style={(category === '10') ? style : {}}>Music</div>
+                <div onClick={() => setCategory('17')} className='categoryBlocks' style={(category === '17') ? style : {}}>Sports</div>
+                <div onClick={() => setCategory('2')} className='categoryBlocks' style={(category === '2') ? style : {}}>Automobiles</div>
+                <div onClick={() => setCategory('24')} className='categoryBlocks' style={(category === '24') ? style : {}}>Entertainment</div>
+                <div onClick={() => setCategory('15')} className='categoryBlocks' style={(category === '15') ? style : {}}>Animals</div>
+                <div onClick={() => setCategory('25')} className='categoryBlocks' style={(category === '25') ? style : {}}>News</div>
+                <div onClick={() => setCategory('28')} className='categoryBlocks' style={(category === '28') ? style : {}}>Technology</div>
             </div>
         )
     }
 
-    function dock() {
+    function handleSubscription() {
+        return (
+            <div className='subscription'>
+
+            </div>
+        )
+    }
+
+    function handleDock() {
+        const style = { color: 'gray', transform: 'scale(1.2)', pointerEvents: 'none' };
         return (
             <div className='dock'>
-                <div className='dockBlocks'>Home</div>
+                <div onClick={() => setDock("home")} className='dockBlocks' style={(dock === 'home') ? style : {}}>Home</div>
                 <div className='dockBlocks'>Shorts</div>
                 <div className='dockBlocksMid'>+</div>
                 <div className='dockBlocks'>Subscriptions</div>
@@ -190,14 +185,13 @@ const fetchChannelData = async () => {
     }
 
 
-
     return (
         <div className='youtube'>
             <div className='ytContainer'>
                 {navbar()}
-                {handleCategory()}
-                <div className='contentScreen'>
-                    {(channels) && videos.map((item, index) => {
+                {dock === 'home' && handleCategory()}
+                {dock === 'home' && <div className='contentScreen'>
+                    {videos && videos.map((item, index) => {
                         return (
                             <div className='vidContainer'>
                                 <img className='thumbnail' src={item.snippet.thumbnails.maxres.url} alt='thumbnail' />
@@ -211,8 +205,26 @@ const fetchChannelData = async () => {
                             </div>
                         )
                     })}
-                </div>
-                {dock()}
+                </div>}
+                {dock === 'search' && <div className='searchScreen'>
+                    {searchVideos.map((item, index) => {
+                        return (
+                            <div className='vidContainer'>
+                                <img className='thumbnail' src={item.snippet.thumbnails.high.url} alt='thumbnail' />
+                                <div className='infoContainer'>
+                                    <div className='pfpic'><img className='channelThumbnail' src={searchChannels[index].snippet.thumbnails.default.url} alt='thumbnail' /></div>
+                                    <div>
+                                        <div className='vidTitle'>{item.snippet.title}</div>
+                                        <div className='vidTitleChild'>{item.snippet.channelTitle} · {numberFormat(item.statistics.viewCount)} views · {moment(item.snippet.publishedAt).fromNow()}</div>
+                                    </div>
+                                </div>
+                            </div>
+                        )
+                    })}
+                </div>}
+
+
+                {handleDock()}
             </div>
         </div>
     )
