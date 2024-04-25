@@ -136,18 +136,17 @@
 }
 
 .youtube .dockBlocksMid {
-    display: flex;
-    vertical-align: middle;
-    align-items: center;
-    justify-content: center;
-    text-align: center;
     border: 1px solid white;
-    border-radius: 100%;
-    width: 30px;
-    height: 30px;
+    border-radius: 50%;
     font-size: 40px;
-    padding: 3px 2px 0px 2px;
+    display: block;
+    height: 30px;
+    width: 30px;
+    line-height: 25px;
+    text-align: center;
 }
+
+
 
 .youtube .vidTitle {
     font-size: 15px;

@@ -4,11 +4,11 @@ import { useState } from "react";
 import { useEffect } from 'react';
 import moment from 'moment'
 
-const API = 'AIzaSyAzrJl-vTFKi4Npzq7jZWQMl6C0_7N7Jyg';
+const API = 'AIzaSyAeX_TNIxeprj21DmFdv1N6JmrSy9DS0fc';
 
 const channelId = 'UCyqmsSDVwQKnlzz7xCUoG8g';
 
-
+/*
 var fetchurl = `https://www.googleapis.com/youtube/v3/search?key=${API}&channelId=${channelId}&part=snippet,id&order=date&maxResult=20`;
 
 const YouTubetest = () => {
@@ -39,7 +39,7 @@ const YouTubetest = () => {
     )
 }
 
-
+*/
 
 function numberFormat(strNum) {
     var num = parseInt(strNum);
@@ -51,7 +51,6 @@ function numberFormat(strNum) {
         return strNum;
     }
 }
-
 
 
 const testchannelurl = `https://youtube.googleapis.com/youtube/v3/channels?key=${API}&id=UCurvRE5fGcdUgCYWgh-BDsg&part=snippet`;
@@ -79,7 +78,7 @@ function YouTube() {
     function navbar() {
         return (
             <div className='navbar'>
-                <img className='ytlogo' src='./src/assets/ytlogo.png' alt='logo' />
+                <img onClick={() => setDock("home")} className='ytlogo' src='./src/assets/ytlogo.png' alt='logo' />
                 <div className='inputContainer'><input placeholder='Search' onChange={handleSearch}
                     onKeyDown={e => {
                         if (e.code === "Enter") {
@@ -94,25 +93,31 @@ function YouTube() {
     const search_url = `https://www.googleapis.com/youtube/v3/search?part=snippet&maxResults=5&q=${keyword}&type=video&key=${API}`
 
     const fetchSearchData = async (url) => {
-        const response = await fetch(url);
-        const resJson = await response.json();
-        const result = resJson.items;
 
-        const channelResult = await Promise.all(
-            result.map(item => {
-                fetch(`https://www.googleapis.com/youtube/v3/videos?key=${API}&id=${item.id.videoId}&part=statistics`)
-                .then(res => res.json())
-                .then(resJson => {
-                    item.statistics = resJson.items[0].statistics;
+        try {
+            const response = await fetch(url);
+            const resJson = await response.json();
+            const result = resJson.items;
+
+            const channelResult = await Promise.all(
+                result.map(item => {
+                    fetch(`https://www.googleapis.com/youtube/v3/videos?key=${API}&id=${item.id.videoId}&part=statistics`)
+                        .then(res => res.json())
+                        .then(resJson => {
+                            item.statistics = resJson.items[0].statistics;
+                        })
+                    return fetchChannelData(item);
                 })
-                return fetchChannelData(item);
-            })
-        )
-        console.log(result);
-        setSearchVideos(result);
-        console.log(channelResult);
-        setSearchChannels(channelResult);
+            )
+            console.log(result);
+            setSearchVideos(result);
+            console.log(channelResult);
+            setSearchChannels(channelResult);
 
+        } catch (error) {
+            alert(error);
+            return;
+        }
     }
 
     const fetchData = async (url) => {
@@ -131,7 +136,7 @@ function YouTube() {
         )
         console.log(channelResult);
         setChannels(channelResult);
-        
+
 
     }
 
@@ -191,12 +196,12 @@ function YouTube() {
                 {navbar()}
                 {dock === 'home' && handleCategory()}
                 {dock === 'home' && <div className='contentScreen'>
-                    {videos && videos.map((item, index) => {
+                    {channels && videos.map((item, index) => {
                         return (
                             <div className='vidContainer'>
                                 <img className='thumbnail' src={item.snippet.thumbnails.maxres.url} alt='thumbnail' />
                                 <div className='infoContainer'>
-                                    <div className='pfpic'><img className='channelThumbnail' src={channels[index].snippet.thumbnails.default.url} alt='thumbnail' /></div>
+                                    <div className='pfpic'><img src={channels[index].snippet.thumbnails.default.url} className='channelThumbnail' alt='thumbnail' /></div>
                                     <div>
                                         <div className='vidTitle'>{item.snippet.title}</div>
                                         <div className='vidTitleChild'>{item.snippet.channelTitle} · {numberFormat(item.statistics.viewCount)} views · {moment(item.snippet.publishedAt).fromNow()}</div>
@@ -207,7 +212,7 @@ function YouTube() {
                     })}
                 </div>}
                 {dock === 'search' && <div className='searchScreen'>
-                    {searchVideos.map((item, index) => {
+                    {searchChannels && searchVideos && searchVideos.map((item, index) => {
                         return (
                             <div className='vidContainer'>
                                 <img className='thumbnail' src={item.snippet.thumbnails.high.url} alt='thumbnail' />
