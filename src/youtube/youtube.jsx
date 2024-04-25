@@ -63,6 +63,7 @@ function YouTube() {
     const [dock, setDock] = useState('home');
     const [keyword, setKeyword] = useState('');
     const [searchVideos, setSearchVideos] = useState(null);
+    const [searchOthers, setSearchOthers] = useState(null);
     const [searchChannels, setSearchChannels] = useState(null);
     const [curVideo, setCurVideo] = useState(null);
     const [curChannel, setCurChannel] = useState(null);
@@ -100,19 +101,23 @@ function YouTube() {
             const response = await fetch(url);
             const resJson = await response.json();
             const result = resJson.items;
+            console.log(result);
+            setSearchVideos(result);
+
+            const otherResult = await Promise.all(
+                result.map(item => {
+                    return fetchOtherData(item);
+                })
+            )
+            console.log(otherResult);
+            setSearchOthers(otherResult);
 
             const channelResult = await Promise.all(
                 result.map(item => {
-                    fetch(`https://www.googleapis.com/youtube/v3/videos?key=${API}&id=${item.id.videoId}&part=statistics`)
-                        .then(res => res.json())
-                        .then(resJson => {
-                            item.statistics = resJson.items[0].statistics;
-                        })
                     return fetchChannelData(item);
                 })
             )
-            console.log(result);
-            setSearchVideos(result);
+
             console.log(channelResult);
             setSearchChannels(channelResult);
 
@@ -121,6 +126,15 @@ function YouTube() {
             return;
         }
     }
+
+    const fetchOtherData = async (item) => {
+        const response =  await fetch(`https://www.googleapis.com/youtube/v3/videos?key=${API}&id=${item.id.videoId}&part=statistics`)
+        const resJson = await response.json();
+        const result = resJson.items[0].statistics;
+        return result;
+    }
+
+
 
     const fetchData = async (url) => {
 
@@ -178,13 +192,25 @@ function YouTube() {
     }
 
     function handleDock() {
-        const style = { color: 'gray', transform: 'scale(1.2)', pointerEvents: 'none' };
+
         return (
             <div className='dock'>
-                <div onClick={() => setDock("home")} className='dockBlocks' style={(dock === 'home') ? style : {}}>Home</div>
-                <div className='dockBlocks'>Shorts</div>
+                <div onClick={() => setDock("home")} className='dockBlocks'>
+                    {(dock === 'home')
+                        ? <img className='dockIcon' src='./src/assets/homeClicked.png' alt='clicked' />
+                        : <img className='dockIcon' src='./src/assets/home.png' alt='notclikcked' />} Home
+                </div>
+                <div onClick={() => setDock("shorts")} className='dockBlocks'>
+                    {(dock === 'shorts')
+                        ? <img className='dockIcon' src='./src/assets/shortsClicked.png' alt='clicked' />
+                        : <img className='dockIcon' src='./src/assets/shorts.png' alt='notclikcked' />} Shorts
+                </div>
                 <div className='dockBlocksMid'>+</div>
-                <div className='dockBlocks'>Subscriptions</div>
+                <div onClick={() => setDock("subs")} className='dockBlocks'>
+                    {(dock === 'subs')
+                        ? <img className='dockIcon' src='./src/assets/subsClicked.png' alt='clicked' />
+                        : <img className='dockIcon' src='./src/assets/subs.png' alt='notclikcked' />} Subscription
+                </div>
                 <div className='dockBlocks'>You</div>
             </div>
         )
@@ -206,14 +232,14 @@ function YouTube() {
         <div className='youtube'>
             <div className='ytContainer'>
                 {navbar()}
-                {dock === 'nowPlaying' &&  <div className='nowPlaying'>
+                {dock === 'nowPlaying' && <div className='nowPlaying'>
                     <div className='videoContainer'>
-                <div className='backButton'>This is playing!</div>  
-                <iframe width="420" height="315" src={"https://www.youtube.com/embed/" + curVideo.id}
-                title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
-                referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
-                </div>
-            </div>}
+                        <div className='backButton'>Back</div>
+                        <iframe width="430" height="240" src={"https://www.youtube.com/embed/" + curVideo.id + "?controls=0&autoplay=1&modestbranding=0"}
+                            title="YouTube video player" frameborder="0" allow="accelerometer; modestbranding; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                            referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+                    </div>
+                </div>}
 
 
 
@@ -237,7 +263,7 @@ function YouTube() {
                     })}
                 </div>}
                 {dock === 'search' && <div className='searchScreen'>
-                    {searchChannels && searchVideos && searchVideos.map((item, index) => {
+                    {searchChannels && searchOthers && searchVideos.map((item, index) => {
                         return (
                             <div className='vidContainer'>
                                 <img className='thumbnail' src={item.snippet.thumbnails.high.url} alt='thumbnail' />
@@ -245,7 +271,7 @@ function YouTube() {
                                     <div className='pfpic'><img className='channelThumbnail' src={searchChannels[index].snippet.thumbnails.default.url} alt='thumbnail' /></div>
                                     <div>
                                         <div className='vidTitle'>{item.snippet.title}</div>
-                                        <div className='vidTitleChild'>{item.snippet.channelTitle} · {numberFormat(item.statistics.viewCount)} views · {moment(item.snippet.publishedAt).fromNow()}</div>
+                                        <div className='vidTitleChild'>{item.snippet.channelTitle} · {numberFormat(searchOthers[index].viewCount)} views · {moment(item.snippet.publishedAt).fromNow()}</div>
                                     </div>
                                 </div>
                             </div>
