@@ -102,7 +102,7 @@ function TopContainer(props) {
 
 function CurrentOutput(props) {
     return (
-        <div class="currentOutput">
+        <div className="currentOutput">
             <div className='myLoc'>My Location</div>
             <img className='mainIcon' src={props.weatherData.current.condition.icon} alt="icon" />
             <div className='location'>{props.weatherData.location.name}</div>
@@ -188,7 +188,7 @@ function Forecast(props) {
         const astro = props.weatherData.forecast.forecastday[0].astro;
         return (
             <div classname='astro'>
-                <div className='widgetTitle'><i class="fa-regular fa-sun"></i> SUNRISE</div>
+                <div className='widgetTitle'><i className="fa-regular fa-sun"></i> SUNRISE</div>
                 <div className='widgetContent'>
                     {astro.sunrise}
                 </div>
@@ -203,7 +203,7 @@ function Forecast(props) {
         const dir = props.weatherData.current.wind_dir;
         return (
             <div classname='wind'>
-                <div className='widgetTitle'><i class="fa-solid fa-wind"></i> WIND</div>
+                <div className='widgetTitle'><i className="fa-solid fa-wind"></i> WIND</div>
                 <div className='widgetContent'>
                     <div className='windWidget'>{wind}
                         <div>
@@ -212,7 +212,7 @@ function Forecast(props) {
                         </div>
                     </div>
                     <hr></hr>
-                    <div class='windWidget'>{gust}
+                    <div className='windWidget'>{gust}
                         <div>
                             <div className='windgust min'>KM/H</div>
                             <div className='windgust'>Gusts</div>
@@ -242,9 +242,9 @@ function Forecast(props) {
         }
         return (
             <div classname='vis'>
-                <div className='widgetTitle'><i class="fa-solid fa-eye"></i> VISIBILITY</div>
+                <div className='widgetTitle'><i className="fa-solid fa-eye"></i> VISIBILITY</div>
                 <div className='widgetContent'>
-                    <div>{vis}<span class='ampm'> KM</span></div>
+                    <div>{vis}<span className='ampm'> KM</span></div>
                 </div>
                 <div className='widgetComment'>{comment}</div>
             </div>
@@ -256,7 +256,7 @@ function Forecast(props) {
             {getHourly(newArr)}
             <div className='dailyContainer'>
                 <div className='daily'>
-                    <span className='dailyTitle'><i class="fa fa-calendar" aria-hidden="true"></i> 3-DAY FORECAST</span>
+                    <span className='dailyTitle'><i className="fa fa-calendar" aria-hidden="true"></i> 3-DAY FORECAST</span>
                 </div>
                 <hr></hr>
                 <div className='daily'>

@@ -64,6 +64,8 @@ function YouTube() {
     const [keyword, setKeyword] = useState('');
     const [searchVideos, setSearchVideos] = useState(null);
     const [searchChannels, setSearchChannels] = useState(null);
+    const [curVideo, setCurVideo] = useState(null);
+    const [curChannel, setCurChannel] = useState(null);
 
     useEffect(() => {
         fetchData(category_url);
@@ -90,7 +92,7 @@ function YouTube() {
         )
     }
     const category_url = `https://youtube.googleapis.com/youtube/v3/videos?key=${API}&chart=mostPopular&videoCategoryId=${category}&part=snippet,statistics,contentDetails&maxResults=2`
-    const search_url = `https://www.googleapis.com/youtube/v3/search?part=snippet&maxResults=5&q=${keyword}&type=video&key=${API}`
+    const search_url = `https://www.googleapis.com/youtube/v3/search?part=snippet&maxResults=2&q=${keyword}&type=video&key=${API}`
 
     const fetchSearchData = async (url) => {
 
@@ -149,7 +151,6 @@ function YouTube() {
     }
 
 
-
     function handleCategory() {
         const style = { background: 'white', color: '#202121', pointerEvents: 'none' };
 
@@ -189,17 +190,41 @@ function YouTube() {
         )
     }
 
+    function playVideo(video, channel) {
+        const playUrl = "https://www.youtube.com/embed/" + video.id;
+        setCurVideo(video);
+        setCurChannel(channel);
+        setDock('nowPlaying');
+
+        console.log(playUrl)
+        console.log(channel.id);
+    }
+
+
 
     return (
         <div className='youtube'>
             <div className='ytContainer'>
                 {navbar()}
+                {dock === 'nowPlaying' &&  <div className='nowPlaying'>
+                    <div className='videoContainer'>
+                <div className='backButton'>This is playing!</div>  
+                <iframe width="420" height="315" src={"https://www.youtube.com/embed/" + curVideo.id}
+                title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+                referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+                </div>
+            </div>}
+
+
+
                 {dock === 'home' && handleCategory()}
                 {dock === 'home' && <div className='contentScreen'>
                     {channels && videos.map((item, index) => {
                         return (
                             <div className='vidContainer'>
-                                <img className='thumbnail' src={item.snippet.thumbnails.maxres.url} alt='thumbnail' />
+                                <img onClick={() => {
+                                    playVideo(item, channels[index]);
+                                }} className='thumbnail' src={item.snippet.thumbnails.maxres.url} alt='thumbnail' />
                                 <div className='infoContainer'>
                                     <div className='pfpic'><img src={channels[index].snippet.thumbnails.default.url} className='channelThumbnail' alt='thumbnail' /></div>
                                     <div>
@@ -227,13 +252,13 @@ function YouTube() {
                         )
                     })}
                 </div>}
-
-
                 {handleDock()}
             </div>
+
         </div>
     )
 }
+
 
 
 
