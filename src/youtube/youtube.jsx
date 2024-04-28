@@ -139,7 +139,7 @@ function YouTube() {
     const fetchData = async (url) => {
 
         //fetch data and store it in state
-        const response = await fetch(url);
+        const response = await fetch(url);ㄴ
         const resJson = await response.json();
         const result = resJson.items;
         console.log(result);
