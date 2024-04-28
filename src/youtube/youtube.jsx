@@ -128,9 +128,9 @@ function YouTube() {
     }
 
     const fetchOtherData = async (item) => {
-        const response =  await fetch(`https://www.googleapis.com/youtube/v3/videos?key=${API}&id=${item.id.videoId}&part=statistics`)
+        const response = await fetch(`https://www.googleapis.com/youtube/v3/videos?key=${API}&id=${item.id.videoId}&part=snippet,statistics`)
         const resJson = await response.json();
-        const result = resJson.items[0].statistics;
+        const result = resJson.items[0]
         return result;
     }
 
@@ -139,7 +139,7 @@ function YouTube() {
     const fetchData = async (url) => {
 
         //fetch data and store it in state
-        const response = await fetch(url);ㄴ
+        const response = await fetch(url);
         const resJson = await response.json();
         const result = resJson.items;
         console.log(result);
@@ -235,9 +235,26 @@ function YouTube() {
                 {dock === 'nowPlaying' && <div className='nowPlaying'>
                     <div className='videoContainer'>
                         <div className='backButton'>Back</div>
-                        <iframe width="430" height="240" src={"https://www.youtube.com/embed/" + curVideo.id + "?controls=0&autoplay=1&modestbranding=0"}
-                            title="YouTube video player" frameborder="0" allow="accelerometer; modestbranding; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                        <iframe width="430" height="240" src={"https://www.youtube.com/embed/" + curVideo.id + "?controls=0&autoplay=1"}
+                            title="YouTube video player" frameborder="0" allow="accelerometer; modestbranding; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                             referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+                        <div className='vidInfoContainer'>
+                            <div className='firstContainer'>
+                                <div className='title' style={{ fontSize: 23 }}>This is Title</div>
+                                <div className='titleInfo'>
+                                    <span>{curVideo.statistics.viewCount} views</span>
+                                    <span>hrs ago</span>
+                                    <span># tags</span>
+                                </div>
+                                <div className='secondContainer'>
+                                <div className='channel'>
+                                    <span>logo</span>
+                                    <span>channelName</span>
+                                    <span>subs#</span>
+                                </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>}
 
@@ -266,7 +283,9 @@ function YouTube() {
                     {searchChannels && searchOthers && searchVideos.map((item, index) => {
                         return (
                             <div className='vidContainer'>
-                                <img className='thumbnail' src={item.snippet.thumbnails.high.url} alt='thumbnail' />
+                                <img onClick={() => {
+                                    playVideo(searchOthers[index], searchChannels[index]);
+                                }} className='thumbnail' src={item.snippet.thumbnails.high.url} alt='thumbnail' />
                                 <div className='infoContainer'>
                                     <div className='pfpic'><img className='channelThumbnail' src={searchChannels[index].snippet.thumbnails.default.url} alt='thumbnail' /></div>
                                     <div>

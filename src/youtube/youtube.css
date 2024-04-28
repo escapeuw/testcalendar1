@@ -184,8 +184,23 @@
 }
 
 .youtube .videoContainer {
-    border: 1px dashed white;
     display: flex;
     flex-direction: column;
     width: 100%;
+}
+.youtube .vidInfoContainer {
+    display: flex;
+    flex-direction: column;
+    margin: 0px 10px;
+    width: 95%;
+}
+
+.youtube .firstContainer {
+    margin: 20px 0px 10px;
+    border: 1px solid white;
+}
+.youtube .titleInfo {
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
 }
