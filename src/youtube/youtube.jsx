@@ -52,6 +52,17 @@ function numberFormat(strNum) {
     }
 }
 
+function numberFormatSubs(strNum) {
+    var num = parseInt(strNum);
+    if (num >= 1000000) {
+        return (num / 1000000).toFixed(2) + 'M';
+    } else if (num >= 1000) {
+        return Math.floor(num / 1000) + 'K';
+    } else {
+        return strNum;
+    }
+}
+
 
 const testchannelurl = `https://youtube.googleapis.com/youtube/v3/channels?key=${API}&id=UCurvRE5fGcdUgCYWgh-BDsg&part=snippet`;
 
@@ -157,7 +168,7 @@ function YouTube() {
     }
 
     const fetchChannelData = async (item) => {
-        let channelurl = `https://youtube.googleapis.com/youtube/v3/channels?key=${API}&id=${item.snippet.channelId}&part=snippet,id`;
+        let channelurl = `https://youtube.googleapis.com/youtube/v3/channels?key=${API}&id=${item.snippet.channelId}&part=snippet,id,statistics`;
         const response = await fetch(channelurl);
         const resJson = await response.json();
         const channelResult = resJson.items;
@@ -215,6 +226,11 @@ function YouTube() {
             </div>
         )
     }
+    function handleTags(video) {
+        const tags = video.snippet.tags.map(item => `#${item}`);
+        const tagsStr = tags.join(" ");
+        return tagsStr;
+    }
 
     function playVideo(video, channel) {
         const playUrl = "https://www.youtube.com/embed/" + video.id;
@@ -236,22 +252,23 @@ function YouTube() {
                     <div className='videoContainer'>
                         <div className='backButton'>Back</div>
                         <iframe width="430" height="240" src={"https://www.youtube.com/embed/" + curVideo.id + "?controls=0&autoplay=1"}
-                            title="YouTube video player" frameborder="0" allow="accelerometer; modestbranding; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                            referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+                            title="YouTube video player" frameBorder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                            referrerPolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
                         <div className='vidInfoContainer'>
                             <div className='firstContainer'>
-                                <div className='title' style={{ fontSize: 23 }}>This is Title</div>
+                                <div className='title' style={{ fontSize: 18, padding: '10px 0px'}}>{curVideo.snippet.title}</div>
                                 <div className='titleInfo'>
-                                    <span>{curVideo.statistics.viewCount} views</span>
-                                    <span>hrs ago</span>
-                                    <span># tags</span>
+                                    <span className='titleInfos'>{curVideo.statistics.viewCount} views</span>
+                                    <span className='titleInfos'>{moment(curVideo.snippet.publishedAt).fromNow()}</span>
+                                    <span className='titleInfos tags'>{curVideo.snippet.tags && handleTags(curVideo)}</span>
                                 </div>
                                 <div className='secondContainer'>
                                 <div className='channel'>
-                                    <span>logo</span>
-                                    <span>channelName</span>
-                                    <span>subs#</span>
+                                    <span><img src={curChannel.snippet.thumbnails.default.url} className='channelThumbnail' alt='thumbnail' /></span>
+                                    <span>{curChannel.snippet.title}</span>
+                                    <span style={{ color: 'lightgray', fontSize: 12}}>{numberFormatSubs(curChannel.statistics.subscriberCount)}</span>
                                 </div>
+                                <div className='buttons'><span className='likeButton'><img style={{width: 18, height: 18}}src='./src/assets/like.png' alt='like' />{numberFormatSubs(curVideo.statistics.likeCount)}</span></div>
                                 </div>
                             </div>
                         </div>

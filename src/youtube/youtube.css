@@ -195,12 +195,36 @@
     width: 95%;
 }
 
-.youtube .firstContainer {
-    margin: 20px 0px 10px;
-    border: 1px solid white;
-}
 .youtube .titleInfo {
+    color: lightgray;
     display: flex;
     flex-direction: row;
     gap: 10px;
+}
+.youtube .tags {
+    width: 45%;
+    height: 15px;
+    text-overflow: ellipsis;
+    overflow: hidden;
+}
+.youtube .titleInfos {
+    font-size: 12px;
+}
+
+.youtube .channel {
+    margin-top: 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+.youtube .buttons {
+
+}
+.youtube .likeButton {
+    display: flex;
+    gap: 5px;
+   text-align: center;
+   background-color: #202121;
+   width: 20%;
+   border-radius: 5px;
 }
