@@ -78,6 +78,8 @@ function YouTube() {
     const [searchChannels, setSearchChannels] = useState(null);
     const [curVideo, setCurVideo] = useState(null);
     const [curChannel, setCurChannel] = useState(null);
+    const [comments, setComments] = useState(null);
+    const [replies, setReplies] = useState(null);
 
     useEffect(() => {
         fetchData(category_url);
@@ -231,15 +233,20 @@ function YouTube() {
         const tagsStr = tags.join(" ");
         return tagsStr;
     }
+    
 
-    function playVideo(video, channel) {
+    const playVideo = async (video, channel) => {
         const playUrl = "https://www.youtube.com/embed/" + video.id;
         setCurVideo(video);
         setCurChannel(channel);
-        setDock('nowPlaying');
+        console.log(video);
+        const response = await fetch(`https://www.googleapis.com/youtube/v3/commentThreads?key=${API}&videoId=${video.id}&part=snippet,replies&order=relevance&maxResults=100`)
+        const resJson = await response.json();
+        const result = resJson.items;
+        console.log(result);
+        setComments(result);
 
-        console.log(playUrl)
-        console.log(channel.id);
+        setDock('nowPlaying');
     }
 
 
@@ -249,28 +256,83 @@ function YouTube() {
             <div className='ytContainer'>
                 {navbar()}
                 {dock === 'nowPlaying' && <div className='nowPlaying'>
+
                     <div className='videoContainer'>
-                        <div className='backButton'>Back</div>
-                        <iframe width="430" height="240" src={"https://www.youtube.com/embed/" + curVideo.id + "?controls=0&autoplay=1"}
+                        <iframe width="430" height="240" src={"https://www.youtube.com/embed/" + curVideo.id + "?controls=1&autoplay=1"}
                             title="YouTube video player" frameBorder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                             referrerPolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+
                         <div className='vidInfoContainer'>
                             <div className='firstContainer'>
-                                <div className='title' style={{ fontSize: 18, padding: '10px 0px'}}>{curVideo.snippet.title}</div>
+                                <div className='title bold' style={{ fontSize: 18, padding: '10px 0px' }}>{curVideo.snippet.title}</div>
                                 <div className='titleInfo'>
                                     <span className='titleInfos'>{curVideo.statistics.viewCount} views</span>
                                     <span className='titleInfos'>{moment(curVideo.snippet.publishedAt).fromNow()}</span>
                                     <span className='titleInfos tags'>{curVideo.snippet.tags && handleTags(curVideo)}</span>
                                 </div>
-                                <div className='secondContainer'>
+                            </div>
+                            <div className='secondContainer'>
                                 <div className='channel'>
                                     <span><img src={curChannel.snippet.thumbnails.default.url} className='channelThumbnail' alt='thumbnail' /></span>
                                     <span>{curChannel.snippet.title}</span>
-                                    <span style={{ color: 'lightgray', fontSize: 12}}>{numberFormatSubs(curChannel.statistics.subscriberCount)}</span>
+                                    <span style={{ color: 'lightgray', fontSize: 12 }}>{numberFormatSubs(curChannel.statistics.subscriberCount)}</span>
                                 </div>
-                                <div className='buttons'><span className='likeButton'><img style={{width: 18, height: 18}}src='./src/assets/like.png' alt='like' />{numberFormatSubs(curVideo.statistics.likeCount)}</span></div>
+                                <div className='buttons'>
+                                    <span className='likeButton'>
+                                        <img style={{ width: 18, height: 18 }} src='./src/assets/like.png' alt='like' />
+                                        {numberFormatSubs(curVideo.statistics.likeCount)}
+                                    </span>
+                                    <span className='likeButton'>
+                                        Share
+                                    </span>
+                                    <span className='likeButton'>
+                                        Remix
+                                    </span>
+                                    <span className='likeButton'>
+                                        Download
+                                    </span>
+                                    <span className='likeButton'>
+                                        Save
+                                    </span>
                                 </div>
                             </div>
+                            {!replies ? <div className='bold commentTop'>Comments <span style={{ fontSize: 10, color: 'lightgray'}}>{numberFormat(curVideo.statistics.commentCount)}</span></div> 
+                                : <div onClick={() => {
+                                    setReplies(null);
+                                }} className='commentTop'>&lt; &nbsp; &nbsp; <span className='bold'>Replies</span></div>}
+                            <div className='commentContainer'>
+                                {!replies && comments && comments.map(video => {
+                                    return (
+                                        <div className='comment'>
+                                            <div><img style={{ width: 20, height: 20, borderRadius: '50%' }} src={video.snippet.topLevelComment.snippet.authorProfileImageUrl} alt='pic' /></div>
+                                            <div>
+                                                <div style={{ color: 'lightgray', fontSize: 12 }}>{video.snippet.topLevelComment.snippet.authorDisplayName} · {moment(video.snippet.topLevelComment.snippet.publishedAt).fromNow()}</div>
+                                                <div>{video.snippet.topLevelComment.snippet.textOriginal}</div>
+                                                <div className='commentLike'><img style={{ width: 12, height: 12 }} src='./src/assets/like.png' alt='like' /> {video.snippet.topLevelComment.snippet.likeCount !== 0 && video.snippet.topLevelComment.snippet.likeCount}</div>
+                                                {video.snippet.totalReplyCount > 1 ?
+                                                    <div onClick={() => setReplies(video.replies.comments)} style={{ color: 'skyblue' }}>{video.snippet.totalReplyCount} replies</div>
+                                                    : video.snippet.totalReplyCount === 1 ?
+                                                        <div onClick={() => setReplies(video.replies.comments)} style={{ color: 'skyblue' }}>1 reply</div>
+                                                        : <div></div>}
+                                            </div>
+                                        </div>)
+                                })}
+                                {replies && replies.map(reply => {
+                                    return (
+                                        <div className='comment'>
+                                            <div><img style={{ width: 20, height: 20, borderRadius: '50%' }} src={reply.snippet.authorProfileImageUrl} alt='pic' /></div>
+                                            <div>
+                                                <div style={{ color: 'lightgray', fontSize: 12 }}>{reply.snippet.authorDisplayName} · {moment(reply.snippet.publishedAt).fromNow()}</div>
+                                                <div>{reply.snippet.textOriginal}</div>
+                                                <div className='commentLike'><img style={{ width: 12, height: 12 }} src='./src/assets/like.png' alt='like' /> {reply.snippet.likeCount !== 0 && reply.snippet.likeCount}</div>
+                                            </div>
+                                        </div>
+                                    )
+                                })}
+
+                            </div>
+
+
                         </div>
                     </div>
                 </div>}
