@@ -43,18 +43,9 @@ const YouTubetest = () => {
 
 function numberFormat(strNum) {
     var num = parseInt(strNum);
-    if (num >= 1000000) {
+    if (num > 99999999) {
         return Math.floor(num / 1000000) + 'M';
-    } else if (num >= 1000) {
-        return Math.floor(num / 1000) + 'K';
-    } else {
-        return strNum;
-    }
-}
-
-function numberFormatSubs(strNum) {
-    var num = parseInt(strNum);
-    if (num >= 1000000) {
+    } else if (num >= 1000000) {
         return (num / 1000000).toFixed(2) + 'M';
     } else if (num >= 1000) {
         return Math.floor(num / 1000) + 'K';
@@ -275,12 +266,12 @@ function YouTube() {
                                 <div className='channel'>
                                     <span><img src={curChannel.snippet.thumbnails.default.url} className='channelThumbnail' alt='thumbnail' /></span>
                                     <span>{curChannel.snippet.title}</span>
-                                    <span style={{ color: 'lightgray', fontSize: 12 }}>{numberFormatSubs(curChannel.statistics.subscriberCount)}</span>
+                                    <span style={{ color: 'lightgray', fontSize: 12 }}>{numberFormat(curChannel.statistics.subscriberCount)}</span>
                                 </div>
                                 <div className='buttons'>
                                     <span className='likeButton'>
                                         <img style={{ width: 18, height: 18 }} src='./src/assets/like.png' alt='like' />
-                                        {numberFormatSubs(curVideo.statistics.likeCount)}
+                                        {numberFormat(curVideo.statistics.likeCount)}
                                     </span>
                                     <span className='likeButton'>
                                         Share
