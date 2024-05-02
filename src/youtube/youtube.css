@@ -136,6 +136,7 @@
     width: 100%;
     height: 40px;
     border-top: 1px solid grey;
+    position: inherit;
 }
 
 .youtube .dockBlocks {
@@ -247,12 +248,14 @@
     border-radius: 20px;
     font-size: 10px;
 }
+
 .youtube .commentTop {
     padding: 12px 10px;
     border-bottom: 1px solid gray;
     background-color: #202121;
     border-radius: 20px 20px 0px 0px;
 }
+
 .youtube .commentContainer {
     font-size: 13px;
     background-color: #202121;
@@ -264,6 +267,7 @@
     /* Internet Explorer 10+ */
     scrollbar-width: none;
 }
+
 .youtube .comment {
     display: flex;
     gap: 15px;
@@ -273,10 +277,90 @@
 .bold {
     font-weight: bold;
 }
+
 .youtube .commentLike {
     font-size: 10px;
     display: flex;
     align-items: center;
     gap: 10px;
     padding: 10px 0px;
+}
+
+.youtube .shortsContainer {
+    width: 100%;
+    height: 580px;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+.youtube .shorts {
+    height: 100%;
+    width: 100%;
+    position: relative;
+}
+
+.youtube .shortsThumbnail {
+    z-index: 0;
+    width: 100%;
+    height: 100%;
+    transform: scaleX(3.05);
+    opacity: 0.85;
+}
+
+.shortsTop, .sideBar, .channelBar {
+    z-index: 5;
+    position: absolute;
+    background: #00000000; 
+}
+
+.youtube .shortsTop {
+    z-index: 9999;
+    width: 90%;
+    height: 0;
+    display: flex;
+    justify-content: space-between;  
+    top: 20px;
+    right: 0;
+    bottom: 0;
+    left: 25px;
+    position: sticky;
+}
+.youtube .shortsTop > * {
+    font-size: 18px;
+    font-weight: bold;
+}
+
+.youtube .sideBar {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+    top: 200px;
+    right: 0px;
+    bottom: 0;
+    left: 80%;
+    font-size: 12px;
+}
+
+.youtube .sideBarItem {
+    text-align: center;
+    text-shadow: 3px 3px 10px black;
+}
+
+.youtube .channelBar {
+    width: 80%;
+    height: 40px;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 10px;
+    top: 80%;
+    font-size: 14px;
+    left: 5%;
+}
+
+.youtube .shortsTitle {
+    font-size: 15px;
+    height: 35px;
+    text-overflow: ellipsis;
+    overflow: hidden;
 }

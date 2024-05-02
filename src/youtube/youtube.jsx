@@ -4,7 +4,8 @@ import { useState } from "react";
 import { useEffect } from 'react';
 import moment from 'moment'
 
-const API = 'AIzaSyAeX_TNIxeprj21DmFdv1N6JmrSy9DS0fc';
+const API = 'AIzaSyAzrJl-vTFKi4Npzq7jZWQMl6C0_7N7Jyg';
+
 
 const channelId = 'UCyqmsSDVwQKnlzz7xCUoG8g';
 
@@ -32,7 +33,7 @@ function YouTube() {
     const [category, setCategory] = useState('0');
     const [dock, setDock] = useState('home');
     const [keyword, setKeyword] = useState('');
-    const [searchData, setSearchData] = useState({ videos: null, others: null, channels: null});
+    const [searchData, setSearchData] = useState({ videos: null, others: null, channels: null });
     const [curData, setCurData] = useState({ curVideo: null, curChannel: null })
     const [comments, setComments] = useState(null);
     const [replies, setReplies] = useState(null);
@@ -93,7 +94,7 @@ function YouTube() {
             } else {
                 setShorts({ videos: result, others: otherResult, channels: channelResult })
             }
-            
+
 
         } catch (error) {
             alert(error);
@@ -117,7 +118,7 @@ function YouTube() {
         const resJson = await response.json();
         const result = resJson.items;
         console.log(result);
-        
+
 
         const channelResult = await Promise.all(
             result.map(item => {
@@ -176,7 +177,8 @@ function YouTube() {
                 </div>
                 <div onClick={() => {
                     fetchSearchData(shorts_url);
-                    setDock("shorts")}} className='dockBlocks'>
+                    setDock("shorts")
+                }} className='dockBlocks'>
                     {(dock === 'shorts')
                         ? <img className='dockIcon' src='./src/assets/shortsClicked.png' alt='clicked' />
                         : <img className='dockIcon' src='./src/assets/shorts.png' alt='notclikcked' />} Shorts
@@ -196,11 +198,11 @@ function YouTube() {
         const tagsStr = tags.join(" ");
         return tagsStr;
     }
-    
+
 
     const playVideo = async (video, channel) => {
         const playUrl = "https://www.youtube.com/embed/" + video.id;
-        setCurData({ curVideo: video, curChannel: channel})
+        setCurData({ curVideo: video, curChannel: channel })
         console.log(video);
         const response = await fetch(`https://www.googleapis.com/youtube/v3/commentThreads?key=${API}&videoId=${video.id}&part=snippet,replies&order=relevance&maxResults=100`)
         const resJson = await response.json();
@@ -211,19 +213,19 @@ function YouTube() {
         setDock('nowPlaying');
     }
 
-    
+
 
 
 
     return (
         <div className='youtube'>
             <div className='ytContainer'>
-                {navbar()}
+                {dock !== 'shorts' && navbar()}
                 {dock === 'nowPlaying' && <div className='nowPlaying'>
 
                     <div className='videoContainer'>
                         <iframe width="430" height="240" src={"https://www.youtube.com/embed/" + curData.curVideo.id + "?controls=1&autoplay=1"}
-                            title="YouTube video player" frameBorder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                            title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                             referrerPolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 
                         <div className='vidInfoContainer'>
@@ -260,7 +262,7 @@ function YouTube() {
                                     </span>
                                 </div>
                             </div>
-                            {!replies ? <div className='bold commentTop'>Comments <span style={{ fontSize: 10, color: 'lightgray'}}>{numberFormat(curData.curVideo.statistics.commentCount)}</span></div> 
+                            {!replies ? <div className='bold commentTop'>Comments <span style={{ fontSize: 10, color: 'lightgray' }}>{numberFormat(curData.curVideo.statistics.commentCount)}</span></div>
                                 : <div onClick={() => {
                                     setReplies(null);
                                 }} className='commentTop'>&lt; &nbsp; &nbsp; <span className='bold'>Replies</span></div>}
@@ -302,23 +304,29 @@ function YouTube() {
                 </div>}
 
 
-                {dock == 'shorts' && <div className='searchScreen'>
+                {dock == 'shorts' && <div className='shortsContainer'>
+                    <div className='shortsTop'><span>Shorts</span><span><i style={{ fontSize: 20 }} className="fa-solid fa-magnifying-glass"></i> &nbsp; &nbsp;⋮</span></div>
                     {shorts.channels && shorts.others && shorts.videos.map((item, index) => {
                         if (moment.duration(shorts.others[index].contentDetails.duration).asSeconds() <= 60) {
-                        return (
-                            <div className='vidContainer'>
-                                <img onClick={() => {
-                                    playVideo(shorts.others[index], shorts.channels[index]);
-                                }} className='thumbnail' src={item.snippet.thumbnails.high.url} alt='thumbnail' />
-                                <div className='infoContainer'>
-                                    <div className='pfpic'><img className='channelThumbnail' src={shorts.channels[index].snippet.thumbnails.default.url} alt='thumbnail' /></div>
-                                    <div>
-                                        <div className='vidTitle'>{item.snippet.title}</div>
-                                        <div className='vidTitleChild'>{item.snippet.channelTitle} · {numberFormat(shorts.others[index].viewCount)} views · {moment(item.snippet.publishedAt).fromNow()}</div>
+                            return (
+                                <div className='shorts'>
+                                    <div className='sideBar'>
+                                        <div className='sideBarItem'><img style={{ width: 20, height: 20, borderRadius: 5 }} src='./src/assets/shortsL.png' alt='like' /><div>{numberFormat(shorts.others[index].statistics.likeCount)}</div></div>
+                                        <div className='sideBarItem'><img style={{ width: 20, height: 20, borderRadius: 5 }} src='./src/assets/shortsD.png' alt='dislike' /><div>Dislike</div></div>
+                                        <div className='sideBarItem'><img style={{ width: 20, height: 20, borderRadius: 5 }} src='./src/assets/shortsC.png' alt='comment' /><div>{shorts.others[index].statistics.commentCount}</div></div>
+                                        <div className='sideBarItem'><img style={{ width: 20, height: 20, borderRadius: 5 }} src='./src/assets/shortsS.png' alt='share' /><div>Share</div></div>
+                                        <div className='sideBarItem'>Remix</div>
                                     </div>
+                                    <div className='channelBar'>
+                                        <div><img className='channelThumbnail' src={shorts.channels[index].snippet.thumbnails.default.url} /></div>
+                                        <div>{shorts.channels[index].snippet.customUrl}</div>
+                                        <div style={{ fontSize: 12, color: 'black', background: 'white', borderRadius: 20, padding: "7px 10px"}}>Subscribe</div>
+                                        <div className='shortsTitle'>{item.snippet.title}</div>
+                                    </div>
+                                    <img className='shortsThumbnail' src={shorts.others[index].snippet.thumbnails.maxres.url} />
                                 </div>
-                            </div>
-                        )}
+                            )
+                        }
                     })}
                 </div>}
                 {dock === 'home' && handleCategory()}
