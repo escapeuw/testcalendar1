@@ -8,38 +8,7 @@ const API = 'AIzaSyAeX_TNIxeprj21DmFdv1N6JmrSy9DS0fc';
 
 const channelId = 'UCyqmsSDVwQKnlzz7xCUoG8g';
 
-/*
-var fetchurl = `https://www.googleapis.com/youtube/v3/search?key=${API}&channelId=${channelId}&part=snippet,id&order=date&maxResult=20`;
 
-const YouTubetest = () => {
-    const [allvideos, setAllvideos] = useState([]);
-    useEffect(() => {
-        fetch(fetchurl).then((response) => response.json()).then((resJson) => {
-            const result = resJson.items.map(doc => ({
-                ...doc,
-                Videolink: "https://www.youtube.com/embed/" + doc.id.videoId + "?modestbranding=1&;showinfo=0&;autohide=1&;rel=0;"
-            }));
-            setAllvideos(result);
-        })
-    }, [])
-
-    console.log(allvideos);
-    return (
-        <div className='youtube'>Hi this is Youtube
-            {allvideos.map((item) => {
-                return (
-                    <div>
-                        <iframe width="420" height="200" src={item.Videolink}
-                            title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; picture-in-picture; web-share"
-                            referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
-                    </div>
-                )
-            })}
-        </div>
-    )
-}
-
-*/
 
 function numberFormat(strNum) {
     var num = parseInt(strNum);
@@ -59,19 +28,15 @@ const testchannelurl = `https://youtube.googleapis.com/youtube/v3/channels?key=$
 
 
 function YouTube() {
-    const [videos, setVideos] = useState(null);
-    const [channels, setChannels] = useState(null);
+    const [data, setData] = useState({ videos: null, channels: null });
     const [category, setCategory] = useState('0');
     const [dock, setDock] = useState('home');
     const [keyword, setKeyword] = useState('');
-    const [searchVideos, setSearchVideos] = useState(null);
-    const [searchOthers, setSearchOthers] = useState(null);
-    const [searchChannels, setSearchChannels] = useState(null);
-    const [curVideo, setCurVideo] = useState(null);
-    const [curChannel, setCurChannel] = useState(null);
+    const [searchData, setSearchData] = useState({ videos: null, others: null, channels: null});
+    const [curData, setCurData] = useState({ curVideo: null, curChannel: null })
     const [comments, setComments] = useState(null);
     const [replies, setReplies] = useState(null);
-    const [shorts, setShorts] = useState(null);
+    const [shorts, setShorts] = useState({ videos: null, others: null, channels: null });
 
     useEffect(() => {
         fetchData(category_url);
@@ -108,7 +73,6 @@ function YouTube() {
             const resJson = await response.json();
             const result = resJson.items;
             console.log(result);
-            setSearchVideos(result);
 
             const otherResult = await Promise.all(
                 result.map(item => {
@@ -116,16 +80,20 @@ function YouTube() {
                 })
             )
             console.log(otherResult);
-            setSearchOthers(otherResult);
 
             const channelResult = await Promise.all(
                 result.map(item => {
                     return fetchChannelData(item);
                 })
             )
-
             console.log(channelResult);
-            setSearchChannels(channelResult);
+
+            if (url.includes('&q=')) {
+                setSearchData({ videos: result, others: otherResult, channels: channelResult })
+            } else {
+                setShorts({ videos: result, others: otherResult, channels: channelResult })
+            }
+            
 
         } catch (error) {
             alert(error);
@@ -149,7 +117,7 @@ function YouTube() {
         const resJson = await response.json();
         const result = resJson.items;
         console.log(result);
-        setVideos(result);
+        
 
         const channelResult = await Promise.all(
             result.map(item => {
@@ -157,7 +125,7 @@ function YouTube() {
             })
         )
         console.log(channelResult);
-        setChannels(channelResult);
+        setData({ videos: result, channels: channelResult });
 
 
     }
@@ -232,8 +200,7 @@ function YouTube() {
 
     const playVideo = async (video, channel) => {
         const playUrl = "https://www.youtube.com/embed/" + video.id;
-        setCurVideo(video);
-        setCurChannel(channel);
+        setCurData({ curVideo: video, curChannel: channel})
         console.log(video);
         const response = await fetch(`https://www.googleapis.com/youtube/v3/commentThreads?key=${API}&videoId=${video.id}&part=snippet,replies&order=relevance&maxResults=100`)
         const resJson = await response.json();
@@ -255,29 +222,29 @@ function YouTube() {
                 {dock === 'nowPlaying' && <div className='nowPlaying'>
 
                     <div className='videoContainer'>
-                        <iframe width="430" height="240" src={"https://www.youtube.com/embed/" + curVideo.id + "?controls=1&autoplay=1"}
+                        <iframe width="430" height="240" src={"https://www.youtube.com/embed/" + curData.curVideo.id + "?controls=1&autoplay=1"}
                             title="YouTube video player" frameBorder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                             referrerPolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 
                         <div className='vidInfoContainer'>
                             <div className='firstContainer'>
-                                <div className='title bold' style={{ fontSize: 18, padding: '10px 0px' }}>{curVideo.snippet.title}</div>
+                                <div className='title bold' style={{ fontSize: 18, padding: '10px 0px' }}>{curData.curVideo.snippet.title}</div>
                                 <div className='titleInfo'>
-                                    <span className='titleInfos'>{curVideo.statistics.viewCount} views</span>
-                                    <span className='titleInfos'>{moment(curVideo.snippet.publishedAt).fromNow()}</span>
-                                    <span className='titleInfos tags'>{curVideo.snippet.tags && handleTags(curVideo)}</span>
+                                    <span className='titleInfos'>{curData.curVideo.statistics.viewCount} views</span>
+                                    <span className='titleInfos'>{moment(curData.curVideo.snippet.publishedAt).fromNow()}</span>
+                                    <span className='titleInfos tags'>{curData.curVideo.snippet.tags && handleTags(curData.curVideo)}</span>
                                 </div>
                             </div>
                             <div className='secondContainer'>
                                 <div className='channel'>
-                                    <span><img src={curChannel.snippet.thumbnails.default.url} className='channelThumbnail' alt='thumbnail' /></span>
-                                    <span>{curChannel.snippet.title}</span>
-                                    <span style={{ color: 'lightgray', fontSize: 12 }}>{numberFormat(curChannel.statistics.subscriberCount)}</span>
+                                    <span><img src={curData.curChannel.snippet.thumbnails.default.url} className='channelThumbnail' alt='thumbnail' /></span>
+                                    <span>{curData.curChannel.snippet.title}</span>
+                                    <span style={{ color: 'lightgray', fontSize: 12 }}>{numberFormat(curData.curChannel.statistics.subscriberCount)}</span>
                                 </div>
                                 <div className='buttons'>
                                     <span className='likeButton'>
                                         <img style={{ width: 18, height: 18 }} src='./src/assets/like.png' alt='like' />
-                                        {numberFormat(curVideo.statistics.likeCount)}
+                                        {numberFormat(curData.curVideo.statistics.likeCount)}
                                     </span>
                                     <span className='likeButton'>
                                         Share
@@ -293,23 +260,23 @@ function YouTube() {
                                     </span>
                                 </div>
                             </div>
-                            {!replies ? <div className='bold commentTop'>Comments <span style={{ fontSize: 10, color: 'lightgray'}}>{numberFormat(curVideo.statistics.commentCount)}</span></div> 
+                            {!replies ? <div className='bold commentTop'>Comments <span style={{ fontSize: 10, color: 'lightgray'}}>{numberFormat(curData.curVideo.statistics.commentCount)}</span></div> 
                                 : <div onClick={() => {
                                     setReplies(null);
                                 }} className='commentTop'>&lt; &nbsp; &nbsp; <span className='bold'>Replies</span></div>}
                             <div className='commentContainer'>
-                                {!replies && comments && comments.map(video => {
+                                {!replies && comments && comments.map(comment => {
                                     return (
                                         <div className='comment'>
-                                            <div><img style={{ width: 20, height: 20, borderRadius: '50%' }} src={video.snippet.topLevelComment.snippet.authorProfileImageUrl} alt='pic' /></div>
+                                            <div><img style={{ width: 20, height: 20, borderRadius: '50%' }} src={comment.snippet.topLevelComment.snippet.authorProfileImageUrl} alt='pic' /></div>
                                             <div>
-                                                <div style={{ color: 'lightgray', fontSize: 12 }}>{video.snippet.topLevelComment.snippet.authorDisplayName} · {moment(video.snippet.topLevelComment.snippet.publishedAt).fromNow()}</div>
-                                                <div>{video.snippet.topLevelComment.snippet.textOriginal}</div>
-                                                <div className='commentLike'><img style={{ width: 12, height: 12 }} src='./src/assets/like.png' alt='like' /> {video.snippet.topLevelComment.snippet.likeCount !== 0 && video.snippet.topLevelComment.snippet.likeCount}</div>
-                                                {video.snippet.totalReplyCount > 1 ?
-                                                    <div onClick={() => setReplies(video.replies.comments)} style={{ color: 'skyblue' }}>{video.snippet.totalReplyCount} replies</div>
-                                                    : video.snippet.totalReplyCount === 1 ?
-                                                        <div onClick={() => setReplies(video.replies.comments)} style={{ color: 'skyblue' }}>1 reply</div>
+                                                <div style={{ color: 'lightgray', fontSize: 12 }}>{comment.snippet.topLevelComment.snippet.authorDisplayName} · {moment(comment.snippet.topLevelComment.snippet.publishedAt).fromNow()}</div>
+                                                <div>{comment.snippet.topLevelComment.snippet.textOriginal}</div>
+                                                <div className='commentLike'><img style={{ width: 12, height: 12 }} src='./src/assets/like.png' alt='like' /> {comment.snippet.topLevelComment.snippet.likeCount !== 0 && comment.snippet.topLevelComment.snippet.likeCount}</div>
+                                                {comment.snippet.totalReplyCount > 1 ?
+                                                    <div onClick={() => setReplies(comment.replies.comments)} style={{ color: 'skyblue' }}>{comment.snippet.totalReplyCount} replies</div>
+                                                    : comment.snippet.totalReplyCount === 1 ?
+                                                        <div onClick={() => setReplies(comment.replies.comments)} style={{ color: 'skyblue' }}>1 reply</div>
                                                         : <div></div>}
                                             </div>
                                         </div>)
@@ -336,18 +303,18 @@ function YouTube() {
 
 
                 {dock == 'shorts' && <div className='searchScreen'>
-                    {searchChannels && searchOthers && searchVideos.map((item, index) => {
-                        if (moment.duration(searchOthers[index].contentDetails.duration).asSeconds() <= 60) {
+                    {shorts.channels && shorts.others && shorts.videos.map((item, index) => {
+                        if (moment.duration(shorts.others[index].contentDetails.duration).asSeconds() <= 60) {
                         return (
                             <div className='vidContainer'>
                                 <img onClick={() => {
-                                    playVideo(searchOthers[index], searchChannels[index]);
+                                    playVideo(shorts.others[index], shorts.channels[index]);
                                 }} className='thumbnail' src={item.snippet.thumbnails.high.url} alt='thumbnail' />
                                 <div className='infoContainer'>
-                                    <div className='pfpic'><img className='channelThumbnail' src={searchChannels[index].snippet.thumbnails.default.url} alt='thumbnail' /></div>
+                                    <div className='pfpic'><img className='channelThumbnail' src={shorts.channels[index].snippet.thumbnails.default.url} alt='thumbnail' /></div>
                                     <div>
                                         <div className='vidTitle'>{item.snippet.title}</div>
-                                        <div className='vidTitleChild'>{item.snippet.channelTitle} · {numberFormat(searchOthers[index].viewCount)} views · {moment(item.snippet.publishedAt).fromNow()}</div>
+                                        <div className='vidTitleChild'>{item.snippet.channelTitle} · {numberFormat(shorts.others[index].viewCount)} views · {moment(item.snippet.publishedAt).fromNow()}</div>
                                     </div>
                                 </div>
                             </div>
@@ -356,14 +323,14 @@ function YouTube() {
                 </div>}
                 {dock === 'home' && handleCategory()}
                 {dock === 'home' && <div className='contentScreen'>
-                    {channels && videos.map((item, index) => {
+                    {data.channels && data.videos.map((item, index) => {
                         return (
                             <div className='vidContainer'>
                                 <img onClick={() => {
-                                    playVideo(item, channels[index]);
+                                    playVideo(item, data.channels[index]);
                                 }} className='thumbnail' src={item.snippet.thumbnails.maxres.url} alt='thumbnail' />
                                 <div className='infoContainer'>
-                                    <div className='pfpic'><img src={channels[index].snippet.thumbnails.default.url} className='channelThumbnail' alt='thumbnail' /></div>
+                                    <div className='pfpic'><img src={data.channels[index].snippet.thumbnails.default.url} className='channelThumbnail' alt='thumbnail' /></div>
                                     <div>
                                         <div className='vidTitle'>{item.snippet.title}</div>
                                         <div className='vidTitleChild'>{item.snippet.channelTitle} · {numberFormat(item.statistics.viewCount)} views · {moment(item.snippet.publishedAt).fromNow()}</div>
@@ -374,17 +341,17 @@ function YouTube() {
                     })}
                 </div>}
                 {dock === 'search' && <div className='searchScreen'>
-                    {searchChannels && searchOthers && searchVideos.map((item, index) => {
+                    {searchData.channels && searchData.others && searchData.videos.map((item, index) => {
                         return (
                             <div className='vidContainer'>
                                 <img onClick={() => {
-                                    playVideo(searchOthers[index], searchChannels[index]);
+                                    playVideo(searchData.others[index], searchData.channels[index]);
                                 }} className='thumbnail' src={item.snippet.thumbnails.high.url} alt='thumbnail' />
                                 <div className='infoContainer'>
-                                    <div className='pfpic'><img className='channelThumbnail' src={searchChannels[index].snippet.thumbnails.default.url} alt='thumbnail' /></div>
+                                    <div className='pfpic'><img className='channelThumbnail' src={searchData.channels[index].snippet.thumbnails.default.url} alt='thumbnail' /></div>
                                     <div>
                                         <div className='vidTitle'>{item.snippet.title}</div>
-                                        <div className='vidTitleChild'>{item.snippet.channelTitle} · {numberFormat(searchOthers[index].viewCount)} views · {moment(item.snippet.publishedAt).fromNow()}</div>
+                                        <div className='vidTitleChild'>{item.snippet.channelTitle} · {numberFormat(searchData.others[index].viewCount)} views · {moment(item.snippet.publishedAt).fromNow()}</div>
                                     </div>
                                 </div>
                             </div>
@@ -397,8 +364,6 @@ function YouTube() {
         </div>
     )
 }
-
-
 
 
 export default YouTube;
