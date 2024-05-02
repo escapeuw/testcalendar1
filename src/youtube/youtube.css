@@ -342,6 +342,10 @@
 }
 
 .youtube .sideBarItem {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    align-items: center;
     text-align: center;
     text-shadow: 3px 3px 10px black;
 }
@@ -360,7 +364,7 @@
 
 .youtube .shortsTitle {
     font-size: 15px;
-    height: 35px;
+    height: 38px;
     text-overflow: ellipsis;
     overflow: hidden;
 }
