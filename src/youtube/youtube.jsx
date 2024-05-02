@@ -71,6 +71,7 @@ function YouTube() {
     const [curChannel, setCurChannel] = useState(null);
     const [comments, setComments] = useState(null);
     const [replies, setReplies] = useState(null);
+    const [shorts, setShorts] = useState(null);
 
     useEffect(() => {
         fetchData(category_url);
@@ -96,8 +97,9 @@ function YouTube() {
             </div>
         )
     }
-    const category_url = `https://youtube.googleapis.com/youtube/v3/videos?key=${API}&chart=mostPopular&videoCategoryId=${category}&part=snippet,statistics,contentDetails&maxResults=2`
+    const category_url = `https://youtube.googleapis.com/youtube/v3/videos?key=${API}&chart=mostPopular&videoCategoryId=${category}&part=snippet,statistics,contentDetails&maxResults=10`
     const search_url = `https://www.googleapis.com/youtube/v3/search?part=snippet&maxResults=2&q=${keyword}&type=video&key=${API}`
+    const shorts_url = `https://www.googleapis.com/youtube/v3/search?part=snippet&type=video&videoDuration=short&maxResults=50&order=viewCount&key=${API}`
 
     const fetchSearchData = async (url) => {
 
@@ -132,7 +134,7 @@ function YouTube() {
     }
 
     const fetchOtherData = async (item) => {
-        const response = await fetch(`https://www.googleapis.com/youtube/v3/videos?key=${API}&id=${item.id.videoId}&part=snippet,statistics`)
+        const response = await fetch(`https://www.googleapis.com/youtube/v3/videos?key=${API}&id=${item.id.videoId}&part=snippet,statistics,contentDetails`)
         const resJson = await response.json();
         const result = resJson.items[0]
         return result;
@@ -204,7 +206,9 @@ function YouTube() {
                         ? <img className='dockIcon' src='./src/assets/homeClicked.png' alt='clicked' />
                         : <img className='dockIcon' src='./src/assets/home.png' alt='notclikcked' />} Home
                 </div>
-                <div onClick={() => setDock("shorts")} className='dockBlocks'>
+                <div onClick={() => {
+                    fetchSearchData(shorts_url);
+                    setDock("shorts")}} className='dockBlocks'>
                     {(dock === 'shorts')
                         ? <img className='dockIcon' src='./src/assets/shortsClicked.png' alt='clicked' />
                         : <img className='dockIcon' src='./src/assets/shorts.png' alt='notclikcked' />} Shorts
@@ -239,6 +243,8 @@ function YouTube() {
 
         setDock('nowPlaying');
     }
+
+    
 
 
 
@@ -329,7 +335,25 @@ function YouTube() {
                 </div>}
 
 
-
+                {dock == 'shorts' && <div className='searchScreen'>
+                    {searchChannels && searchOthers && searchVideos.map((item, index) => {
+                        if (moment.duration(searchOthers[index].contentDetails.duration).asSeconds() <= 60) {
+                        return (
+                            <div className='vidContainer'>
+                                <img onClick={() => {
+                                    playVideo(searchOthers[index], searchChannels[index]);
+                                }} className='thumbnail' src={item.snippet.thumbnails.high.url} alt='thumbnail' />
+                                <div className='infoContainer'>
+                                    <div className='pfpic'><img className='channelThumbnail' src={searchChannels[index].snippet.thumbnails.default.url} alt='thumbnail' /></div>
+                                    <div>
+                                        <div className='vidTitle'>{item.snippet.title}</div>
+                                        <div className='vidTitleChild'>{item.snippet.channelTitle} · {numberFormat(searchOthers[index].viewCount)} views · {moment(item.snippet.publishedAt).fromNow()}</div>
+                                    </div>
+                                </div>
+                            </div>
+                        )}
+                    })}
+                </div>}
                 {dock === 'home' && handleCategory()}
                 {dock === 'home' && <div className='contentScreen'>
                     {channels && videos.map((item, index) => {
