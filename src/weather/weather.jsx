@@ -90,11 +90,15 @@ function Weather() {
 function TopContainer(props) {
     return (
         <div className='searchContainer'>
-            <div className='inputDeco'><i className="fa-solid fa-magnifying-glass"></i>
+            <div className='inputDeco'>
+                <div className="input-magnifier">
+                    <i className="fa-solid fa-magnifying-glass"></i>
+                </div>
                 <input autoFocus
                     placeholder='search cities or airports'
                     value={props.city}
-                    onChange={props.handleInput} onKeyDown={e => { if (e.code === "Enter") { props.fetchData() } }}></input>
+                    onChange={props.handleInput} onKeyDown={e => { if (e.code === "Enter") { props.fetchData() } }}>
+                </input>
             </div>
         </div>)
 }
