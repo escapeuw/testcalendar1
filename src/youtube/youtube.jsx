@@ -336,7 +336,7 @@ function YouTube() {
                             <div className='vidContainer'>
                                 <img onClick={() => {
                                     playVideo(item, data.channels[index]);
-                                }} className='thumbnail' src={item.snippet.thumbnails.maxres.url} alt='thumbnail' />
+                                }} className='thumbnail' src={item.snippet.thumbnails.high.url} alt='thumbnail' />
                                 <div className='infoContainer'>
                                     <div className='pfpic'><img src={data.channels[index].snippet.thumbnails.default.url} className='channelThumbnail' alt='thumbnail' /></div>
                                     <div>
