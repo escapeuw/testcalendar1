@@ -67,6 +67,7 @@ function YouTube() {
     const search_url = `https://www.googleapis.com/youtube/v3/search?part=snippet&maxResults=2&q=${keyword}&type=video&key=${API}`
     const shorts_url = `https://www.googleapis.com/youtube/v3/search?part=snippet&type=video&videoDuration=short&maxResults=50&order=viewCount&key=${API}`
 
+    /* after search bar enter */
     const fetchSearchData = async (url) => {
 
         try {
@@ -102,6 +103,7 @@ function YouTube() {
         }
     }
 
+    // fetch specific data of each videos including statistics 
     const fetchOtherData = async (item) => {
         const response = await fetch(`https://www.googleapis.com/youtube/v3/videos?key=${API}&id=${item.id.videoId}&part=snippet,statistics,contentDetails`)
         const resJson = await response.json();
@@ -113,7 +115,7 @@ function YouTube() {
 
     const fetchData = async (url) => {
 
-        //fetch data and store it in state
+        //fetch data (videos) and store it in state
         const response = await fetch(url);
         const resJson = await response.json();
         const result = resJson.items;
