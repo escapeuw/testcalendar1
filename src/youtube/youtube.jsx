@@ -247,19 +247,23 @@ function YouTube() {
                                 </div>
                                 <div className='buttons'>
                                     <span className='likeButton'>
-                                        <img style={{ width: 18, height: 18 }} src='./src/assets/like.png' alt='like' />
+                                        <img style={{ width: 17, height: 17 }} src='./src/assets/like.png' alt='like' />
                                         {numberFormat(curData.curVideo.statistics.likeCount)}
                                     </span>
                                     <span className='likeButton'>
+                                        <i className="fa-solid fa-share"></i>
                                         Share
                                     </span>
                                     <span className='likeButton'>
+                                        <i class="fa-brands fa-square-youtube"></i>
                                         Remix
                                     </span>
                                     <span className='likeButton'>
+                                        <i class="fa-solid fa-download"></i>
                                         Download
                                     </span>
                                     <span className='likeButton'>
+                                        <i class="fa-regular fa-bookmark"></i>
                                         Save
                                     </span>
                                 </div>
@@ -278,7 +282,7 @@ function YouTube() {
                                                 <div>{comment.snippet.topLevelComment.snippet.textOriginal}</div>
                                                 <div className='commentLike'><img style={{ width: 12, height: 12 }} src='./src/assets/like.png' alt='like' /> {comment.snippet.topLevelComment.snippet.likeCount !== 0 && comment.snippet.topLevelComment.snippet.likeCount}</div>
                                                 {comment.snippet.totalReplyCount > 1 ?
-                                                    <div onClick={() => setReplies(comment.replies.comments)} style={{ color: 'skyblue' }}>{comment.snippet.totalReplyCount} replies</div>
+                                                    <div onClick={() => setReplies(comment.replies.comments)} style={{ color: '#1cabe8' }}>{comment.snippet.totalReplyCount} replies</div>
                                                     : comment.snippet.totalReplyCount === 1 ?
                                                         <div onClick={() => setReplies(comment.replies.comments)} style={{ color: 'skyblue' }}>1 reply</div>
                                                         : <div></div>}
@@ -313,10 +317,10 @@ function YouTube() {
                             return (
                                 <div className='shorts'>
                                     <div className='sideBar'>
-                                        <div className='sideBarItem'><img style={{ width: 20, height: 20, borderRadius: 5 }} src='./src/assets/shortsL.png' alt='like' /><div>{numberFormat(shorts.others[index].statistics.likeCount)}</div></div>
-                                        <div className='sideBarItem'><img style={{ width: 20, height: 20, borderRadius: 5 }} src='./src/assets/shortsD.png' alt='dislike' /><div>Dislike</div></div>
-                                        <div className='sideBarItem'><img style={{ width: 20, height: 20, borderRadius: 5 }} src='./src/assets/shortsC.png' alt='comment' /><div>{shorts.others[index].statistics.commentCount}</div></div>
-                                        <div className='sideBarItem'><img style={{ width: 20, height: 20, borderRadius: 5 }} src='./src/assets/shortsS.png' alt='share' /><div>Share</div></div>
+                                        <div className='sideBarItem'><i style ={{ fontSize: 25}} class="fa-solid fa-thumbs-up"></i><div>{numberFormat(shorts.others[index].statistics.likeCount)}</div></div>
+                                        <div className='sideBarItem'><i style ={{fontSize: 25}} class="fa-solid fa-thumbs-down"></i><div>Dislike</div></div>
+                                        <div className='sideBarItem'><i style ={{fontSize: 25}} class="fa-solid fa-message"></i><div>{shorts.others[index].statistics.commentCount}</div></div>
+                                        <div className='sideBarItem'><i style ={{fontSize: 25}} class="fa-solid fa-share"></i><div>Share</div></div>
                                         <div className='sideBarItem'>Remix</div>
                                     </div>
                                     <div className='channelBar'>

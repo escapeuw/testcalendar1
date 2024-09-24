@@ -237,14 +237,18 @@
 
 .youtube .buttons {
     margin: 10px 0px;
-    width: 95%;
+    width: 100%;
     display: flex;
-    gap: 25px;
+    gap: 15px;
+    overflow-x: auto;
+    -ms-overflow-style: none;
+    /* Internet Explorer 10+ */
+    scrollbar-width: none;
 }
 
 .youtube .likeButton {
     display: flex;
-    gap: 10px;
+    gap: 8px;
     text-align: center;
     align-items: center;
     background-color: #202121;
@@ -355,7 +359,6 @@
     gap: 5px;
     align-items: center;
     text-align: center;
-    text-shadow: 3px 3px 10px black;
 }
 
 .youtube .channelBar {
